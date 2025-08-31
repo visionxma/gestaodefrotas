@@ -3,7 +3,7 @@
 import type React from "react"
 import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
-import { Truck, Users, DollarSign, BarChart3, LogOut, Menu, X } from "lucide-react"
+import { Truck, Users, DollarSign, BarChart3, LogOut, Menu, X, MapPin } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
@@ -17,6 +17,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
   { name: "Caminhões", href: "/trucks", icon: Truck },
   { name: "Motoristas", href: "/drivers", icon: Users },
+  { name: "Viagens", href: "/trips", icon: MapPin },
   { name: "Financeiro", href: "/finance", icon: DollarSign },
 ]
 
