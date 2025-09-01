@@ -9,9 +9,36 @@ import { Suspense } from "react"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Gestão de Frotas",
+  title: "Controle de Frotas",
   description: "Sistema de gestão de frotas de caminhões",
   generator: "v0.app",
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+    ],
+    apple: [{ url: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Controle de Frotas",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Controle de Frotas",
+    title: "Controle de Frotas",
+    description: "Sistema de controle de frotas de caminhões",
+  },
+  twitter: {
+    card: "summary",
+    title: "Gestão de Frotas",
+    description: "Sistema de gestão de frotas de caminhões",
+  },
 }
 
 export default function RootLayout({

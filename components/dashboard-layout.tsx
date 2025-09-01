@@ -46,7 +46,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border">
             <div className="flex items-center gap-2">
               <div className="p-2 bg-sidebar-primary rounded-lg">
-                <Truck className="h-6 w-6 text-sidebar-primary-foreground" />
+                <img src="/icon.svg" alt="ICONFROTAS Logo" className="h-6 w-6" />
               </div>
               <span className="text-lg font-bold text-sidebar-foreground">Frotas</span>
             </div>
