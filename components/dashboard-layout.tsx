@@ -45,7 +45,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           {/* Logo */}
           <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border">
             <div className="flex items-center gap-2">
-                <img src="/icon.svg" alt="ICONFROTAS Logo" className="h-6 w-6" />
+              <div className="p-2 rounded-lg">
+                <img src="/icon.svg" alt="ICONFROTAS Logo" className="h-8 w-8" />
               </div>
               <span className="text-lg font-bold text-sidebar-foreground">Controle de Frotas</span>
             </div>
@@ -55,7 +56,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               className="lg:hidden text-sidebar-foreground hover:bg-sidebar-accent"
               onClick={() => setSidebarOpen(false)}
             >
-              <X className="h-5 w-5" />
+              <X className="h-3 w-3" />
             </Button>
           </div>
 
