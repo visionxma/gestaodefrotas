@@ -1,7 +1,7 @@
 {
-  "name": "Gestão de Frotas",
+  "name": "Controle de Frotas",
   "short_name": "Frotas",
-  "description": "Sistema de gestão de frotas de caminhões",
+  "description": "Sistema de Controle de frotas de caminhões",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

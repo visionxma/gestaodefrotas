@@ -46,8 +46,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border">
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-lg">
-                <img src="/icon.svg" alt="ICONFROTAS Logo" className="h-8 w-8" />
-              </div>
+<img src="https://i.imgur.com/e9kut4B.png" alt="ICONFROTAS Logo" className="h-8 w-8" />              </div>
               <span className="text-lg font-bold text-sidebar-foreground">Controle de Frotas</span>
             </div>
             <Button

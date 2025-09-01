@@ -75,11 +75,10 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="p-3 bg-primary rounded-full">
-              <Truck className="h-8 w-8 text-primary-foreground" />
-            </div>
+            <div className="p-3  rounded-full">
+<img src="https://i.imgur.com/e9kut4B.png" alt="ICONFROTAS Logo" className="h-12 w-12" />            </div>
           </div>
-          <CardTitle className="text-2xl font-bold">Gestão de Frotas</CardTitle>
+          <CardTitle className="text-2xl font-bold">Controle de Frotas</CardTitle>
           <CardDescription>Entre na sua conta para gerenciar sua frota</CardDescription>
         </CardHeader>
         <CardContent>

@@ -309,7 +309,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">Termos de Uso</p>
-                      <p className="text-sm text-muted-foreground">Condições de uso do sistema de gestão de frotas</p>
+                      <p className="text-sm text-muted-foreground">Condições de uso do sistema de Controle de frotas</p>
                     </div>
                     <Button variant="outline" size="sm" asChild>
                       <a

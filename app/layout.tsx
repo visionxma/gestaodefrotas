@@ -10,15 +10,15 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   title: "Controle de Frotas",
-  description: "Sistema de gestão de frotas de caminhões",
+  description: "Sistema de controle de frotas de caminhões",
   generator: "v0.app",
   manifest: "/manifest.json",
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "https://i.imgur.com/e9kut4B.png", type: "image/png" },
+      { url: "https://i.imgur.com/e9kut4B.png", sizes: "32x32", type: "image/png" },
     ],
-    apple: [{ url: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "https://i.imgur.com/e9kut4B.png", sizes: "192x192", type: "image/png" }],
   },
   appleWebApp: {
     capable: true,
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Gestão de Frotas",
-    description: "Sistema de gestão de frotas de caminhões",
+    title: "Controle de Frotas",
+    description: "Sistema de Controle de frotas de caminhões",
   },
 }
 
