@@ -9,8 +9,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Truck } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -18,7 +27,11 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const { login } = useAuth()
+  const [resetEmail, setResetEmail] = useState("")
+  const [isResetLoading, setIsResetLoading] = useState(false)
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
+
+  const { login, resetPassword } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,6 +48,26 @@ export default function LoginPage() {
     }
 
     setIsLoading(false)
+  }
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!resetEmail.trim()) {
+      toast.error("Digite seu email")
+      return
+    }
+
+    setIsResetLoading(true)
+    const success = await resetPassword(resetEmail)
+
+    if (success) {
+      toast.success("Email de recuperação enviado! Verifique sua caixa de entrada.")
+      setIsResetDialogOpen(false)
+      setResetEmail("")
+    } else {
+      toast.error("Erro ao enviar email de recuperação. Verifique se o email está correto.")
+    }
+    setIsResetLoading(false)
   }
 
   return (
@@ -78,6 +111,39 @@ export default function LoginPage() {
               {isLoading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
+
+          <div className="mt-4 text-center">
+            <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="link" className="text-sm">
+                  Esqueci minha senha
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Recuperar Senha</DialogTitle>
+                  <DialogDescription>Digite seu email para receber um link de recuperação de senha.</DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleResetPassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="resetEmail">Email</Label>
+                    <Input
+                      id="resetEmail"
+                      type="email"
+                      placeholder="seu@email.com"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isResetLoading}>
+                    {isResetLoading ? "Enviando..." : "Enviar Link de Recuperação"}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               Não tem uma conta?{" "}

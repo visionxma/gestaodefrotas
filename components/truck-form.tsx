@@ -88,7 +88,11 @@ export function TruckForm({ truck, onSubmit, onCancel, isLoading }: TruckFormPro
                 min="1990"
                 max={new Date().getFullYear() + 1}
                 value={formData.year}
-                onChange={(e) => handleChange("year", Number.parseInt(e.target.value))}
+                onChange={(e) => {
+                  const value = e.target.value
+                  const numValue = value === "" ? new Date().getFullYear() : Number.parseInt(value, 10)
+                  handleChange("year", isNaN(numValue) ? new Date().getFullYear() : numValue)
+                }}
                 required
               />
             </div>
@@ -123,9 +127,18 @@ export function TruckForm({ truck, onSubmit, onCancel, isLoading }: TruckFormPro
                 id="mileage"
                 type="number"
                 min="0"
+                step="1"
                 placeholder="0"
                 value={formData.mileage}
-                onChange={(e) => handleChange("mileage", Number.parseInt(e.target.value) || 0)}
+                onChange={(e) => {
+                  const value = e.target.value
+                  if (value === "") {
+                    handleChange("mileage", 0)
+                  } else {
+                    const numValue = Number.parseInt(value, 10)
+                    handleChange("mileage", isNaN(numValue) ? 0 : numValue)
+                  }
+                }}
               />
             </div>
           </div>

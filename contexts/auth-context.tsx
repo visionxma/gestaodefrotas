@@ -7,9 +7,13 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendPasswordResetEmail,
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   type User as FirebaseUser,
 } from "firebase/auth"
-import { doc, setDoc, getDoc } from "firebase/firestore"
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore"
 import { auth, db } from "@/lib/firebase"
 
 interface User {
@@ -24,6 +28,9 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>
   register: (name: string, email: string, password: string, company: string) => Promise<boolean>
   logout: () => void
+  updateUserData: (name: string, company: string) => Promise<boolean>
+  resetPassword: (email: string) => Promise<boolean>
+  changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>
   isLoading: boolean
 }
 
@@ -115,7 +122,74 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  return <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>{children}</AuthContext.Provider>
+  const updateUserData = async (name: string, company: string): Promise<boolean> => {
+    if (!user) return false
+
+    try {
+      // Atualizar no Firestore
+      await updateDoc(doc(db, "users", user.id), {
+        name,
+        company,
+        updatedAt: new Date().toISOString(),
+      })
+
+      // Atualizar estado local
+      setUser({
+        ...user,
+        name,
+        company,
+      })
+
+      return true
+    } catch (error) {
+      console.error("Erro ao atualizar dados do usuário:", error)
+      return false
+    }
+  }
+
+  const resetPassword = async (email: string): Promise<boolean> => {
+    try {
+      await sendPasswordResetEmail(auth, email)
+      return true
+    } catch (error) {
+      console.error("Erro ao enviar email de recuperação:", error)
+      return false
+    }
+  }
+
+  const changePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
+    if (!auth.currentUser || !user) return false
+
+    try {
+      // Reautenticar o usuário com a senha atual
+      const credential = EmailAuthProvider.credential(user.email, currentPassword)
+      await reauthenticateWithCredential(auth.currentUser, credential)
+
+      // Atualizar para a nova senha
+      await updatePassword(auth.currentUser, newPassword)
+      return true
+    } catch (error) {
+      console.error("Erro ao alterar senha:", error)
+      return false
+    }
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        updateUserData,
+        resetPassword,
+        changePassword,
+        isLoading,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {

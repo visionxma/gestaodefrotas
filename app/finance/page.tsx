@@ -4,11 +4,12 @@ import { useState } from "react"
 import { ProtectedRoute } from "@/components/protected-route"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Plus, Download } from "lucide-react"
 import { TransactionForm } from "@/components/transaction-form"
 import { TransactionList } from "@/components/transaction-list"
 import { useTransactions, type Transaction } from "@/hooks/use-transactions"
 import { useToast } from "@/hooks/use-toast"
+import { usePdfReports } from "@/hooks/use-pdf-reports"
 
 export default function FinancePage() {
   const [showForm, setShowForm] = useState(false)
@@ -17,6 +18,7 @@ export default function FinancePage() {
 
   const { transactions, isLoading, addTransaction, updateTransaction, deleteTransaction } = useTransactions()
   const { toast } = useToast()
+  const { generateFinanceReport } = usePdfReports()
 
   const handleSubmit = async (data: Omit<Transaction, "id" | "userId">) => {
     setIsSubmitting(true)
@@ -97,6 +99,10 @@ export default function FinancePage() {
     setEditingTransaction(null)
   }
 
+  const handleDownloadPDF = () => {
+    generateFinanceReport(transactions)
+  }
+
   return (
     <ProtectedRoute>
       <DashboardLayout>
@@ -106,12 +112,18 @@ export default function FinancePage() {
               <h1 className="text-3xl font-bold text-balance">Financeiro</h1>
               <p className="text-muted-foreground">Controle suas receitas e despesas</p>
             </div>
-            {!showForm && (
-              <Button onClick={() => setShowForm(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Nova Transação
+            <div className="flex gap-2">
+              <Button onClick={handleDownloadPDF} variant="outline">
+                <Download className="h-4 w-4 mr-2" />
+                Baixar PDF
               </Button>
-            )}
+              {!showForm && (
+                <Button onClick={() => setShowForm(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Nova Transação
+                </Button>
+              )}
+            </div>
           </div>
 
           {showForm ? (

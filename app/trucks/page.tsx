@@ -4,12 +4,13 @@ import { useState, useMemo } from "react"
 import { ProtectedRoute } from "@/components/protected-route"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Plus, Download } from "lucide-react"
 import { TruckForm } from "@/components/truck-form"
 import { TruckList } from "@/components/truck-list"
 import { useTrucks, type Truck } from "@/hooks/use-trucks"
 import { useToast } from "@/hooks/use-toast"
 import { SearchFilter } from "@/components/search-filter"
+import { usePdfReports } from "@/hooks/use-pdf-reports"
 
 export default function TrucksPage() {
   const [showForm, setShowForm] = useState(false)
@@ -20,6 +21,7 @@ export default function TrucksPage() {
 
   const { trucks, isLoading, addTruck, updateTruck, deleteTruck } = useTrucks()
   const { toast } = useToast()
+  const { generateTrucksReport } = usePdfReports()
 
   const handleSubmit = async (data: Omit<Truck, "id" | "userId">) => {
     setIsSubmitting(true)
@@ -100,6 +102,10 @@ export default function TrucksPage() {
     setEditingTruck(null)
   }
 
+  const handleDownloadPDF = () => {
+    generateTrucksReport(trucks)
+  }
+
   const filteredTrucks = useMemo(() => {
     return trucks.filter((truck) => {
       const matchesSearch =
@@ -127,12 +133,20 @@ export default function TrucksPage() {
               <h1 className="text-3xl font-bold text-balance">Caminhões</h1>
               <p className="text-muted-foreground">Gerencie sua frota de caminhões</p>
             </div>
-            {!showForm && (
-              <Button onClick={() => setShowForm(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Novo Caminhão
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {!showForm && (
+                <>
+                  <Button onClick={handleDownloadPDF} variant="outline">
+                    <Download className="h-4 w-4 mr-2" />
+                    Baixar PDF
+                  </Button>
+                  <Button onClick={() => setShowForm(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Novo Caminhão
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
 
           {!showForm && (

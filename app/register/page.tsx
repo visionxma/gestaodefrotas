@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Truck } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Truck, ExternalLink } from "lucide-react"
 import Link from "next/link"
 
 export default function RegisterPage() {
@@ -19,14 +20,22 @@ export default function RegisterPage() {
   const [company, setCompany] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false)
 
   const { register } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
     setError("")
+
+    if (!acceptedTerms || !acceptedPrivacy) {
+      setError("Você deve aceitar os Termos de Uso e a Política de Privacidade para continuar")
+      return
+    }
+
+    setIsLoading(true)
 
     const success = await register(name, email, password, company)
 
@@ -98,6 +107,58 @@ export default function RegisterPage() {
                 minLength={6}
               />
             </div>
+            <div className="space-y-3 pt-2">
+              <div className="flex items-start space-x-2">
+                <Checkbox
+                  id="terms"
+                  checked={acceptedTerms}
+                  onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Aceito os{" "}
+                    <a
+                      href="https://drive.google.com/file/d/1YUlgWRwq0x32AvsL8uBvIEsccboNfcVe/view?usp=sharing"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline inline-flex items-center gap-1"
+                    >
+                      Termos de Uso
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-2">
+                <Checkbox
+                  id="privacy"
+                  checked={acceptedPrivacy}
+                  onCheckedChange={(checked) => setAcceptedPrivacy(checked as boolean)}
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="privacy"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Aceito a{" "}
+                    <a
+                      href="https://drive.google.com/file/d/19lg6tVrXG1wiBC0-fyPoINJzkqTuQjdA/view?usp=sharing"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline inline-flex items-center gap-1"
+                    >
+                      Política de Privacidade
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </label>
+                </div>
+              </div>
+            </div>
+
             {error && <div className="text-destructive text-sm text-center">{error}</div>}
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Criando conta..." : "Criar Conta"}

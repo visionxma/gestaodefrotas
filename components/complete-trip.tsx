@@ -11,7 +11,12 @@ import type { Trip } from "@/hooks/use-trips"
 
 interface CompleteTripProps {
   trip: Trip
-  onSubmit: (data: { endLocation: string; endKm: number; endDate: string; endTime: string }) => void
+  onSubmit: (data: {
+    endLocation: string
+    endKm: number
+    endDate: string
+    endTime: string
+  }) => void
   onCancel: () => void
   isLoading: boolean
 }
@@ -44,21 +49,22 @@ export function CompleteTrip({ trip, onSubmit, onCancel, isLoading }: CompleteTr
       return
     }
 
-    // Validar se a quilometragem final é maior que a inicial
-    if (Number(formData.endKm) <= trip.startKm) {
+    const endKmValue = Number.parseInt(formData.endKm, 10)
+
+    if (isNaN(endKmValue) || endKmValue <= trip.startKm) {
       alert("A quilometragem final deve ser maior que a inicial")
       return
     }
 
     onSubmit({
       endLocation: formData.endLocation,
-      endKm: Number(formData.endKm),
+      endKm: endKmValue,
       endDate: formData.endDate,
       endTime: formData.endTime,
     })
   }
 
-  const kmTraveled = formData.endKm ? Number(formData.endKm) - trip.startKm : 0
+  const kmTraveled = formData.endKm ? Number.parseInt(formData.endKm, 10) - trip.startKm : 0
 
   return (
     <Card>
@@ -88,63 +94,71 @@ export function CompleteTrip({ trip, onSubmit, onCancel, isLoading }: CompleteTr
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="endLocation">Local de Chegada</Label>
-              <Input
-                id="endLocation"
-                value={formData.endLocation}
-                onChange={(e) => setFormData((prev) => ({ ...prev, endLocation: e.target.value }))}
-                placeholder="Ex: Rio de Janeiro - RJ"
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium mb-4">Dados de Chegada</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="endLocation">Local de Chegada</Label>
+                <Input
+                  id="endLocation"
+                  value={formData.endLocation}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, endLocation: e.target.value }))}
+                  placeholder="Ex: Rio de Janeiro - RJ"
+                  required
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="endKm">Quilometragem Final</Label>
-              <Input
-                id="endKm"
-                type="number"
-                value={formData.endKm}
-                onChange={(e) => setFormData((prev) => ({ ...prev, endKm: e.target.value }))}
-                placeholder="Ex: 150500"
-                min={trip.startKm + 1}
-                required
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="endKm">Quilometragem Final</Label>
+                <Input
+                  id="endKm"
+                  type="number"
+                  step="1"
+                  value={formData.endKm}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setFormData((prev) => ({ ...prev, endKm: value }))
+                  }}
+                  placeholder="Ex: 150500"
+                  min={trip.startKm + 1}
+                  required
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="endDate">Data de Chegada</Label>
-              <Input
-                id="endDate"
-                type="date"
-                value={formData.endDate}
-                onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
-                min={trip.startDate}
-                required
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="endDate">Data de Chegada</Label>
+                <Input
+                  id="endDate"
+                  type="date"
+                  value={formData.endDate}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
+                  min={trip.startDate}
+                  required
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="endTime">Horário de Chegada</Label>
-              <Input
-                id="endTime"
-                type="time"
-                value={formData.endTime}
-                onChange={(e) => setFormData((prev) => ({ ...prev, endTime: e.target.value }))}
-                required
-              />
+              <div className="space-y-2">
+                <Label htmlFor="endTime">Horário de Chegada</Label>
+                <Input
+                  id="endTime"
+                  type="time"
+                  value={formData.endTime}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, endTime: e.target.value }))}
+                  required
+                />
+              </div>
+
+              {kmTraveled > 0 && (
+                <div className="space-y-2">
+                  <Label>Quilômetros Percorridos</Label>
+                  <div className="p-3 bg-primary/10 rounded-lg">
+                    <span className="text-lg font-semibold text-primary">{kmTraveled.toLocaleString()} km</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-
-          {kmTraveled > 0 && (
-            <div className="p-3 bg-primary/10 rounded-lg">
-              <p className="text-sm font-medium">
-                Quilômetros percorridos: <span className="text-primary">{kmTraveled.toLocaleString()} km</span>
-              </p>
-            </div>
-          )}
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" disabled={isLoading}>

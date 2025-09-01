@@ -16,15 +16,42 @@ const chartConfig = {
   },
 }
 
-export function RevenueExpenseChart() {
-  const { getChartData } = useTransactions()
-  const chartData = getChartData()
+interface RevenueExpenseChartProps {
+  period?: string
+  truckFilter?: string | null
+  driverFilter?: string | null
+}
+
+export function RevenueExpenseChart({
+  period = "6m",
+  truckFilter = null,
+  driverFilter = null,
+}: RevenueExpenseChartProps) {
+  const { getFilteredChartData } = useTransactions()
+  const chartData = getFilteredChartData(period, truckFilter, driverFilter)
+
+  const getDescription = () => {
+    switch (period) {
+      case "7d":
+        return "Últimos 7 dias"
+      case "30d":
+        return "Últimos 30 dias"
+      case "3m":
+        return "Últimos 3 meses"
+      case "6m":
+        return "Últimos 6 meses"
+      case "1y":
+        return "Último ano"
+      default:
+        return "Todo período"
+    }
+  }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Receitas vs Despesas</CardTitle>
-        <CardDescription>Comparativo dos últimos 6 meses</CardDescription>
+        <CardDescription>{getDescription()}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

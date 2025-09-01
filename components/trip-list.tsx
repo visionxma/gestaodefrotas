@@ -3,17 +3,18 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Truck, User, Trash2, CheckCircle } from "lucide-react"
+import { MapPin, Truck, User, Trash2, CheckCircle, DollarSign, Weight } from "lucide-react"
 import type { Trip } from "@/hooks/use-trips"
 
 interface TripListProps {
   trips: Trip[]
   onComplete: (trip: Trip) => void
   onDelete: (id: string) => void
+  onViewDetails?: (trip: Trip) => void
   isLoading: boolean
 }
 
-export function TripList({ trips, onComplete, onDelete, isLoading }: TripListProps) {
+export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading }: TripListProps) {
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -70,6 +71,11 @@ export function TripList({ trips, onComplete, onDelete, isLoading }: TripListPro
                 <span className="text-sm text-muted-foreground">{formatDateTime(trip.startDate, trip.startTime)}</span>
               </div>
               <div className="flex gap-2">
+                {onViewDetails && (
+                  <Button size="sm" variant="outline" onClick={() => onViewDetails(trip)} className="h-8">
+                    Ver Detalhes
+                  </Button>
+                )}
                 {trip.status === "in_progress" && (
                   <Button size="sm" onClick={() => onComplete(trip)} className="h-8">
                     <CheckCircle className="h-4 w-4 mr-1" />
@@ -122,6 +128,54 @@ export function TripList({ trips, onComplete, onDelete, isLoading }: TripListPro
                 </div>
               )}
             </div>
+
+            {(trip.weightTons || trip.freightValue || trip.netProfit !== undefined) && (
+              <div className="mt-4 pt-4 border-t">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {trip.weightTons && (
+                    <div className="flex items-center gap-2">
+                      <Weight className="h-4 w-4 text-blue-500" />
+                      <div>
+                        <p className="text-sm font-medium">{trip.weightTons} t</p>
+                        <p className="text-xs text-muted-foreground">Peso</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {trip.freightValue && (
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="h-4 w-4 text-green-500" />
+                      <div>
+                        <p className="text-sm font-medium">R$ {trip.freightValue.toFixed(2)}</p>
+                        <p className="text-xs text-muted-foreground">Valor do Frete</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {trip.totalExpenses !== undefined && (
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="h-4 w-4 text-red-500" />
+                      <div>
+                        <p className="text-sm font-medium">R$ {trip.totalExpenses.toFixed(2)}</p>
+                        <p className="text-xs text-muted-foreground">Despesas</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {trip.netProfit !== undefined && (
+                    <div className="flex items-center gap-2">
+                      <DollarSign className={`h-4 w-4 ${trip.netProfit >= 0 ? "text-green-600" : "text-red-600"}`} />
+                      <div>
+                        <p className={`text-sm font-medium ${trip.netProfit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                          R$ {trip.netProfit.toFixed(2)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Lucro Líquido</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="mt-4 pt-4 border-t">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">

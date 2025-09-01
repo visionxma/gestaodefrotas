@@ -4,12 +4,13 @@ import { useState, useMemo } from "react"
 import { ProtectedRoute } from "@/components/protected-route"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Plus, Download } from "lucide-react"
 import { DriverForm } from "@/components/driver-form"
 import { DriverList } from "@/components/driver-list"
 import { useDrivers, type Driver } from "@/hooks/use-drivers"
 import { useToast } from "@/hooks/use-toast"
 import { SearchFilter } from "@/components/search-filter"
+import { usePdfReports } from "@/hooks/use-pdf-reports"
 
 export default function DriversPage() {
   const [showForm, setShowForm] = useState(false)
@@ -20,6 +21,7 @@ export default function DriversPage() {
 
   const { drivers, isLoading, addDriver, updateDriver, deleteDriver } = useDrivers()
   const { toast } = useToast()
+  const { generateDriversReport } = usePdfReports()
 
   const handleSubmit = async (data: Omit<Driver, "id" | "userId">) => {
     setIsSubmitting(true)
@@ -100,6 +102,10 @@ export default function DriversPage() {
     setEditingDriver(null)
   }
 
+  const handleDownloadPDF = () => {
+    generateDriversReport(drivers)
+  }
+
   const filteredDrivers = useMemo(() => {
     return drivers.filter((driver) => {
       const matchesSearch =
@@ -127,12 +133,20 @@ export default function DriversPage() {
               <h1 className="text-3xl font-bold text-balance">Motoristas</h1>
               <p className="text-muted-foreground">Gerencie seus motoristas</p>
             </div>
-            {!showForm && (
-              <Button onClick={() => setShowForm(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Novo Motorista
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {!showForm && (
+                <>
+                  <Button onClick={handleDownloadPDF} variant="outline">
+                    <Download className="h-4 w-4 mr-2" />
+                    Baixar PDF
+                  </Button>
+                  <Button onClick={() => setShowForm(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Novo Motorista
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
 
           {!showForm && (

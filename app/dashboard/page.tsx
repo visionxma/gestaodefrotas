@@ -1,27 +1,78 @@
 "use client"
 
+import { useState } from "react"
 import { ProtectedRoute } from "@/components/protected-route"
 import { DashboardLayout } from "@/components/dashboard-layout"
-import { StatsCards } from "@/components/stats-cards"
+import { DashboardFilters } from "@/components/dashboard-filters"
+import { EnhancedStatsCards } from "@/components/enhanced-stats-cards"
 import { RevenueExpenseChart } from "@/components/revenue-expense-chart"
 import { RecentTransactions } from "@/components/recent-transactions"
+import { TripsOverview } from "@/components/trips-overview"
+import { useTrucks } from "@/hooks/use-trucks"
+import { useDrivers } from "@/hooks/use-drivers"
+import { Download } from "lucide-react"
+import { usePdfReports } from "@/hooks/use-pdf-reports"
+import { useTransactions } from "@/hooks/use-transactions"
+import { Button } from "@/components/ui/button"
 
 export default function DashboardPage() {
+  const [selectedPeriod, setSelectedPeriod] = useState("30d")
+  const [selectedTruck, setSelectedTruck] = useState<string | null>(null)
+  const [selectedDriver, setSelectedDriver] = useState<string | null>(null)
+
+  const { trucks } = useTrucks()
+  const { drivers } = useDrivers()
+  const { transactions } = useTransactions()
+  const { generateDashboardReport } = usePdfReports()
+
+  const handleDownloadPDF = () => {
+    const stats = {
+      totalRevenue: 50000,
+      totalExpenses: 30000,
+      netProfit: 20000,
+      activeTrips: 5,
+      completedTrips: 25,
+    }
+
+    generateDashboardReport({
+      stats,
+      transactions: transactions.slice(0, 10),
+      trips: [], // You'd pass actual trips data here
+    })
+  }
+
   return (
     <ProtectedRoute>
       <DashboardLayout>
         <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold text-balance">Dashboard</h1>
-            <p className="text-muted-foreground">Visão geral da sua frota e finanças</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-balance">Dashboard</h1>
+              <p className="text-muted-foreground">Visão geral completa da sua frota e operações</p>
+            </div>
+            <Button onClick={handleDownloadPDF} variant="outline">
+              <Download className="h-4 w-4 mr-2" />
+              Baixar PDF
+            </Button>
           </div>
 
-          <StatsCards />
+          <DashboardFilters
+            onPeriodChange={setSelectedPeriod}
+            onTruckFilter={setSelectedTruck}
+            onDriverFilter={setSelectedDriver}
+            trucks={trucks}
+            drivers={drivers}
+            selectedPeriod={selectedPeriod}
+          />
+
+          <EnhancedStatsCards period={selectedPeriod} truckFilter={selectedTruck} driverFilter={selectedDriver} />
 
           <div className="grid gap-6 md:grid-cols-2">
-            <RevenueExpenseChart />
-            <RecentTransactions />
+            <RevenueExpenseChart period={selectedPeriod} truckFilter={selectedTruck} driverFilter={selectedDriver} />
+            <TripsOverview truckFilter={selectedTruck} driverFilter={selectedDriver} />
           </div>
+
+          <RecentTransactions />
         </div>
       </DashboardLayout>
     </ProtectedRoute>

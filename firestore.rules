@@ -2,8 +2,113 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth != null;
+    
+    // Regras para usuários
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Regras para caminhões
+    match /trucks/{truckId} {
+      allow read, write: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Regras para motoristas
+    match /drivers/{driverId} {
+      allow read, write: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+    }
+    
+    match /transactions/{transactionId} {
+      allow read, write: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.keys().hasAll([
+          'type', 'description', 'amount', 'date', 'category', 'userId'
+        ]) &&
+        request.resource.data.type in ['receita', 'despesa'] &&
+        request.resource.data.amount is number &&
+        request.resource.data.amount > 0;
+    }
+    
+    match /trips/{tripId} {
+      // Permitir leitura apenas para o proprietário
+      allow read: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.keys().hasAll([
+          'truckId', 'driverId', 'startLocation', 
+          'startKm', 'startDate', 'status', 'userId'
+        ]) &&
+        request.resource.data.status == 'in_progress' &&
+        request.resource.data.startKm is number &&
+        request.resource.data.startKm >= 0 &&
+        // Validações opcionais para campos de frete
+        (
+          !request.resource.data.keys().hasAny(['weightTons']) ||
+          (request.resource.data.weightTons is number && request.resource.data.weightTons >= 0)
+        ) &&
+        (
+          !request.resource.data.keys().hasAny(['pricePerTon']) ||
+          (request.resource.data.pricePerTon is number && request.resource.data.pricePerTon >= 0)
+        ) &&
+        (
+          !request.resource.data.keys().hasAny(['freightValue']) ||
+          (request.resource.data.freightValue is number && request.resource.data.freightValue >= 0)
+        ) &&
+        // Validação para array de despesas
+        (
+          !request.resource.data.keys().hasAny(['expenses']) ||
+          request.resource.data.expenses is list
+        );
+      
+      allow update: if request.auth != null && 
+        resource.data.userId == request.auth.uid &&
+        // Validações para finalização de viagem
+        (
+          // Se está finalizando a viagem
+          (resource.data.status == 'in_progress' && 
+           request.resource.data.status == 'completed' &&
+           request.resource.data.keys().hasAll(['endLocation', 'endKm', 'endDate']) &&
+           request.resource.data.endKm is number &&
+           request.resource.data.endKm > resource.data.startKm) ||
+          // Ou se está apenas atualizando outros campos (como despesas)
+          (resource.data.status == request.resource.data.status)
+        ) &&
+        // Validações para campos financeiros opcionais
+        (
+          !request.resource.data.keys().hasAny(['weightTons']) ||
+          (request.resource.data.weightTons is number && request.resource.data.weightTons >= 0)
+        ) &&
+        (
+          !request.resource.data.keys().hasAny(['pricePerTon']) ||
+          (request.resource.data.pricePerTon is number && request.resource.data.pricePerTon >= 0)
+        ) &&
+        (
+          !request.resource.data.keys().hasAny(['expenses']) ||
+          request.resource.data.expenses is list
+        ) &&
+        // Validação para valores calculados
+        (
+          !request.resource.data.keys().hasAny(['totalExpenses']) ||
+          (request.resource.data.totalExpenses is number && request.resource.data.totalExpenses >= 0)
+        ) &&
+        (
+          !request.resource.data.keys().hasAny(['totalRevenues']) ||
+          (request.resource.data.totalRevenues is number && request.resource.data.totalRevenues >= 0)
+        );
+      
+      // Permitir exclusão para o proprietário
+      allow delete: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
     }
   }
 }

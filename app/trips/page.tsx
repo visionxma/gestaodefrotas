@@ -4,24 +4,29 @@ import { useState, useMemo } from "react"
 import { ProtectedRoute } from "@/components/protected-route"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Plus, Download } from "lucide-react"
 import { TripForm } from "@/components/trip-form"
 import { TripList } from "@/components/trip-list"
 import { CompleteTrip } from "@/components/complete-trip"
+import { TripDetails } from "@/components/trip-details"
 import { useTrips, type Trip } from "@/hooks/use-trips"
 import { useToast } from "@/hooks/use-toast"
 import { SearchFilter } from "@/components/search-filter"
+import { usePdfReports } from "@/hooks/use-pdf-reports"
 
 export default function TripsPage() {
   const [showForm, setShowForm] = useState(false)
   const [showCompleteForm, setShowCompleteForm] = useState(false)
+  const [showDetails, setShowDetails] = useState(false)
   const [completingTrip, setCompletingTrip] = useState<Trip | null>(null)
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
 
   const { trips, isLoading, addTrip, completeTrip, deleteTrip } = useTrips()
   const { toast } = useToast()
+  const { generateTripsReport } = usePdfReports()
 
   const handleSubmit = async (data: Omit<Trip, "id" | "userId" | "status">) => {
     setIsSubmitting(true)
@@ -118,10 +123,21 @@ export default function TripsPage() {
     }
   }
 
+  const handleViewDetails = (trip: Trip) => {
+    setSelectedTrip(trip)
+    setShowDetails(true)
+  }
+
   const handleCancel = () => {
     setShowForm(false)
     setShowCompleteForm(false)
+    setShowDetails(false)
     setCompletingTrip(null)
+    setSelectedTrip(null)
+  }
+
+  const handleDownloadPDF = () => {
+    generateTripsReport(trips)
   }
 
   const filteredTrips = useMemo(() => {
@@ -152,15 +168,23 @@ export default function TripsPage() {
               <h1 className="text-3xl font-bold text-balance">Viagens</h1>
               <p className="text-muted-foreground">Gerencie as viagens da sua frota</p>
             </div>
-            {!showForm && !showCompleteForm && (
-              <Button onClick={() => setShowForm(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Nova Viagem
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {!showForm && !showCompleteForm && !showDetails && (
+                <>
+                  <Button onClick={handleDownloadPDF} variant="outline">
+                    <Download className="h-4 w-4 mr-2" />
+                    Baixar PDF
+                  </Button>
+                  <Button onClick={() => setShowForm(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Nova Viagem
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
 
-          {!showForm && !showCompleteForm && (
+          {!showForm && !showCompleteForm && !showDetails && (
             <SearchFilter
               searchValue={searchTerm}
               onSearchChange={setSearchTerm}
@@ -189,8 +213,23 @@ export default function TripsPage() {
               onCancel={handleCancel}
               isLoading={isSubmitting}
             />
+          ) : showDetails && selectedTrip ? (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Button variant="outline" onClick={handleCancel}>
+                  ← Voltar
+                </Button>
+              </div>
+              <TripDetails trip={selectedTrip} />
+            </div>
           ) : (
-            <TripList trips={filteredTrips} onComplete={handleComplete} onDelete={handleDelete} isLoading={isLoading} />
+            <TripList
+              trips={filteredTrips}
+              onComplete={handleComplete}
+              onDelete={handleDelete}
+              onViewDetails={handleViewDetails}
+              isLoading={isLoading}
+            />
           )}
         </div>
       </DashboardLayout>

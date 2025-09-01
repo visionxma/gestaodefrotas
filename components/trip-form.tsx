@@ -33,7 +33,6 @@ export function TripForm({ onSubmit, onCancel, isLoading }: TripFormProps) {
     startTime: "",
   })
 
-  // Preencher data e hora atuais por padrão
   useEffect(() => {
     const now = new Date()
     const date = now.toISOString().split("T")[0]
@@ -92,83 +91,86 @@ export function TripForm({ onSubmit, onCancel, isLoading }: TripFormProps) {
         <CardTitle>Nova Viagem</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="truck">Caminhão</Label>
-              <Select value={formData.truckId} onValueChange={handleTruckChange} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um caminhão" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableTrucks.map((truck) => (
-                    <SelectItem key={truck.id} value={truck.id}>
-                      {truck.plate} - {truck.brand} {truck.model}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium mb-4">Informações da Viagem</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="truck">Caminhão</Label>
+                <Select value={formData.truckId} onValueChange={handleTruckChange} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um caminhão" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableTrucks.map((truck) => (
+                      <SelectItem key={truck.id} value={truck.id}>
+                        {truck.plate} - {truck.brand} {truck.model}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="driver">Motorista</Label>
-              <Select value={formData.driverId} onValueChange={handleDriverChange} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um motorista" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableDrivers.map((driver) => (
-                    <SelectItem key={driver.id} value={driver.id}>
-                      {driver.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="driver">Motorista</Label>
+                <Select value={formData.driverId} onValueChange={handleDriverChange} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um motorista" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableDrivers.map((driver) => (
+                      <SelectItem key={driver.id} value={driver.id}>
+                        {driver.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="startLocation">Local de Saída</Label>
-              <Input
-                id="startLocation"
-                value={formData.startLocation}
-                onChange={(e) => setFormData((prev) => ({ ...prev, startLocation: e.target.value }))}
-                placeholder="Ex: São Paulo - SP"
-                required
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="startLocation">Local de Saída</Label>
+                <Input
+                  id="startLocation"
+                  value={formData.startLocation}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, startLocation: e.target.value }))}
+                  placeholder="Ex: São Paulo - SP"
+                  required
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="startKm">Quilometragem Inicial</Label>
-              <Input
-                id="startKm"
-                type="number"
-                value={formData.startKm}
-                onChange={(e) => setFormData((prev) => ({ ...prev, startKm: e.target.value }))}
-                placeholder="Ex: 150000"
-                required
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="startKm">Quilometragem Inicial</Label>
+                <Input
+                  id="startKm"
+                  type="number"
+                  value={formData.startKm}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, startKm: e.target.value }))}
+                  placeholder="Ex: 150000"
+                  required
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="startDate">Data de Saída</Label>
-              <Input
-                id="startDate"
-                type="date"
-                value={formData.startDate}
-                onChange={(e) => setFormData((prev) => ({ ...prev, startDate: e.target.value }))}
-                required
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="startDate">Data de Saída</Label>
+                <Input
+                  id="startDate"
+                  type="date"
+                  value={formData.startDate}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, startDate: e.target.value }))}
+                  required
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="startTime">Horário de Saída</Label>
-              <Input
-                id="startTime"
-                type="time"
-                value={formData.startTime}
-                onChange={(e) => setFormData((prev) => ({ ...prev, startTime: e.target.value }))}
-                required
-              />
+              <div className="space-y-2">
+                <Label htmlFor="startTime">Horário de Saída</Label>
+                <Input
+                  id="startTime"
+                  type="time"
+                  value={formData.startTime}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, startTime: e.target.value }))}
+                  required
+                />
+              </div>
             </div>
           </div>
 

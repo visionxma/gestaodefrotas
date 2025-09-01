@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import type { Transaction } from "@/hooks/use-transactions"
 import { useTrucks } from "@/hooks/use-trucks"
 import { useDrivers } from "@/hooks/use-drivers"
+import { useTrips } from "@/hooks/use-trips" // Importado hook de viagens
 
 interface TransactionFormProps {
   transaction?: Transaction
@@ -36,6 +37,7 @@ const expenseCategories = [
 export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: TransactionFormProps) {
   const { trucks } = useTrucks()
   const { drivers } = useDrivers()
+  const { trips } = useTrips() // Adicionado hook de viagens
 
   const [formData, setFormData] = useState({
     type: transaction?.type || ("receita" as const),
@@ -45,6 +47,7 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
     category: transaction?.category || "Frete",
     truckId: transaction?.truckId || undefined,
     driverId: transaction?.driverId || undefined,
+    tripId: transaction?.tripId || undefined, // Adicionado campo tripId
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -53,6 +56,7 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
       ...formData,
       truckId: formData.truckId || undefined,
       driverId: formData.driverId || undefined,
+      tripId: formData.tripId || undefined, // Incluído tripId no submit
     })
   }
 
@@ -62,6 +66,8 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
   }
 
   const categories = formData.type === "receita" ? revenueCategories : expenseCategories
+
+  const completedTrips = trips.filter((trip) => trip.status === "completed")
 
   return (
     <Card>
@@ -119,7 +125,15 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
                 min="0"
                 placeholder="0,00"
                 value={formData.amount}
-                onChange={(e) => handleChange("amount", Number.parseFloat(e.target.value) || 0)}
+                onChange={(e) => {
+                  const value = e.target.value
+                  if (value === "") {
+                    handleChange("amount", 0)
+                  } else {
+                    const numValue = Math.round(Number.parseFloat(value) * 100) / 100
+                    handleChange("amount", isNaN(numValue) ? 0 : numValue)
+                  }
+                }}
                 required
               />
             </div>
@@ -145,6 +159,23 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
                   {categories.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="tripId">Viagem {formData.type === "receita" ? "*" : "(opcional)"}</Label>
+              <Select value={formData.tripId || "none"} onValueChange={(value) => handleChange("tripId", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione uma viagem" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Nenhuma</SelectItem>
+                  {completedTrips.map((trip) => (
+                    <SelectItem key={trip.id} value={trip.id}>
+                      {trip.startLocation} → {trip.endLocation} ({new Date(trip.startDate).toLocaleDateString("pt-BR")})
                     </SelectItem>
                   ))}
                 </SelectContent>
