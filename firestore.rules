@@ -61,5 +61,23 @@ service cloud.firestore {
       allow delete: if request.auth != null && 
         resource.data.userId == request.auth.uid;
     }
+    
+    // Regras para máquinas pesadas
+    match /machinery/{machineryId} {
+      allow read, write: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.keys().hasAll([
+          'model', 'brand', 'serialNumber', 'year', 'type', 'status', 'hours', 'userId'
+        ]) &&
+        request.resource.data.type in ['tractor', 'excavator', 'loader', 'bulldozer', 'crane', 'other'] &&
+        request.resource.data.status in ['active', 'maintenance', 'inactive'] &&
+        request.resource.data.year is number &&
+        request.resource.data.year >= 1990 &&
+        request.resource.data.year <= 2030 &&
+        request.resource.data.hours is number &&
+        request.resource.data.hours >= 0;
+    }
   }
 }
