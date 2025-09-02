@@ -407,11 +407,96 @@ export const usePdfReports = () => {
     [generateHeader],
   )
 
+  const generateMachineryReport = useCallback(
+    (machinery: any[]) => {
+      const doc = new jsPDF()
+      let yPos = generateHeader(doc, "Relatório de Máquinas Pesadas")
+
+      // Summary
+      const activeMachinery = machinery.filter((m) => m.status === "active").length
+      const maintenanceMachinery = machinery.filter((m) => m.status === "maintenance").length
+      const inactiveMachinery = machinery.filter((m) => m.status === "inactive").length
+      const totalHours = machinery.reduce((sum, m) => sum + (m.hours || 0), 0)
+
+      doc.setFontSize(14)
+      doc.setFont("helvetica", "bold")
+      doc.text("Resumo de Máquinas", 20, yPos)
+      yPos += 15
+
+      const summaryData = [
+        ["Máquinas Ativas", activeMachinery.toString()],
+        ["Em Manutenção", maintenanceMachinery.toString()],
+        ["Inativas", inactiveMachinery.toString()],
+        ["Total de Máquinas", machinery.length.toString()],
+        ["Total de Horas", `${totalHours.toLocaleString("pt-BR")} h`],
+      ]
+
+      autoTable(doc, {
+        startY: yPos,
+        head: [["Métrica", "Valor"]],
+        body: summaryData,
+        theme: "grid",
+        headStyles: { fillColor: [156, 163, 175] },
+        margin: { left: 20, right: 20 },
+      })
+
+      yPos = (doc as any).lastAutoTable.finalY + 20
+
+      // Detailed machinery
+      if (machinery.length > 0) {
+        doc.setFontSize(14)
+        doc.setFont("helvetica", "bold")
+        doc.text("Detalhamento de Máquinas", 20, yPos)
+        yPos += 10
+
+        const typeLabels = {
+          tractor: "Trator",
+          excavator: "Retroescavadeira",
+          loader: "Carregadeira",
+          bulldozer: "Bulldozer",
+          crane: "Guindaste",
+          other: "Outros",
+        }
+
+        const machineryData = machinery.map((m) => [
+          m.serialNumber,
+          typeLabels[m.type as keyof typeof typeLabels] || m.type,
+          m.brand,
+          m.model,
+          m.year.toString(),
+          `${m.hours.toLocaleString("pt-BR")} h`,
+          m.status === "active" ? "Ativa" : m.status === "maintenance" ? "Manutenção" : "Inativa",
+        ])
+
+        autoTable(doc, {
+          startY: yPos,
+          head: [["Série", "Tipo", "Marca", "Modelo", "Ano", "Horímetro", "Status"]],
+          body: machineryData,
+          theme: "grid",
+          headStyles: { fillColor: [156, 163, 175] },
+          margin: { left: 20, right: 20 },
+          columnStyles: {
+            0: { cellWidth: 25 },
+            1: { cellWidth: 30 },
+            2: { cellWidth: 25 },
+            3: { cellWidth: 25 },
+            4: { cellWidth: 15 },
+            5: { cellWidth: 25 },
+            6: { cellWidth: 25 },
+          },
+        })
+      }
+
+      doc.save("relatorio-maquinas.pdf")
+    },
+    [generateHeader],
+  )
   return {
     generateDashboardReport,
     generateFinanceReport,
     generateTripsReport,
     generateTrucksReport,
     generateDriversReport,
+    generateMachineryReport,
   }
 }

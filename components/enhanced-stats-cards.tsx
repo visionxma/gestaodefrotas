@@ -1,11 +1,12 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Truck, Users, TrendingUp, MapPin, Fuel } from "lucide-react"
+import { Truck, Users, TrendingUp, MapPin, Fuel, Settings } from "lucide-react"
 import { useTrucks } from "@/hooks/use-trucks"
 import { useDrivers } from "@/hooks/use-drivers"
 import { useTransactions } from "@/hooks/use-transactions"
 import { useTrips } from "@/hooks/use-trips"
+import { useMachinery } from "@/hooks/use-machinery"
 
 interface EnhancedStatsCardsProps {
   period: string
@@ -16,6 +17,7 @@ interface EnhancedStatsCardsProps {
 export function EnhancedStatsCards({ period, truckFilter, driverFilter }: EnhancedStatsCardsProps) {
   const { trucks } = useTrucks()
   const { drivers } = useDrivers()
+  const { machinery } = useMachinery()
   const { getFilteredStats } = useTransactions()
   const { trips } = useTrips()
 
@@ -43,7 +45,7 @@ export function EnhancedStatsCards({ period, truckFilter, driverFilter }: Enhanc
   const profitChange = Math.random() * 30 - 15
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Caminhões</CardTitle>
@@ -57,6 +59,18 @@ export function EnhancedStatsCards({ period, truckFilter, driverFilter }: Enhanc
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Máquinas</CardTitle>
+          <Settings className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{machinery.length}</div>
+          <p className="text-xs text-muted-foreground">
+            {machinery.filter((m) => m.status === "active").length} ativas
+          </p>
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Motoristas</CardTitle>

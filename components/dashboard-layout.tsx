@@ -16,6 +16,7 @@ interface DashboardLayoutProps {
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
   { name: "Caminhões", href: "/trucks", icon: Truck },
+  { name: "Máquinas", href: "/machinery", icon: Settings },
   { name: "Motoristas", href: "/drivers", icon: Users },
   { name: "Viagens", href: "/trips", icon: MapPin },
   { name: "Financeiro", href: "/finance", icon: DollarSign },
