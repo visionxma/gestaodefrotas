@@ -491,6 +491,100 @@ export const usePdfReports = () => {
     },
     [generateHeader],
   )
+
+  const generateRentalsReport = useCallback(
+    (rentals: any[]) => {
+      const doc = new jsPDF()
+      let yPos = generateHeader(doc, "Relatório de Locações")
+
+      // Summary
+      const activeRentals = rentals.filter((r) => r.status === "in_progress").length
+      const completedRentals = rentals.filter((r) => r.status === "completed").length
+      const totalRevenue = rentals
+        .filter((r) => r.status === "completed")
+        .reduce((sum, r) => {
+          const totalHours = (r.finalHours || 0) - r.initialHours
+          return sum + (totalHours * r.hourlyRate)
+        }, 0)
+      const totalHours = rentals
+        .filter((r) => r.status === "completed")
+        .reduce((sum, r) => sum + ((r.finalHours || 0) - r.initialHours), 0)
+
+      doc.setFontSize(14)
+      doc.setFont("helvetica", "bold")
+      doc.text("Resumo de Locações", 20, yPos)
+      yPos += 15
+
+      const summaryData = [
+        ["Locações Ativas", activeRentals.toString()],
+        ["Locações Finalizadas", completedRentals.toString()],
+        ["Total de Locações", rentals.length.toString()],
+        ["Total de Horas", `${totalHours.toLocaleString("pt-BR")} h`],
+        ["Receita Total", `R$ ${totalRevenue.toFixed(2)}`],
+      ]
+
+      autoTable(doc, {
+        startY: yPos,
+        head: [["Métrica", "Valor"]],
+        body: summaryData,
+        theme: "grid",
+        headStyles: { fillColor: [99, 102, 241] },
+        margin: { left: 20, right: 20 },
+      })
+
+      yPos = (doc as any).lastAutoTable.finalY + 20
+
+      // Detailed rentals
+      if (rentals.length > 0) {
+        doc.setFontSize(14)
+        doc.setFont("helvetica", "bold")
+        doc.text("Detalhamento de Locações", 20, yPos)
+        yPos += 10
+
+        const rentalData = rentals.map((r) => {
+          const totalHours = r.finalHours ? r.finalHours - r.initialHours : 0
+          const totalValue = totalHours * r.hourlyRate
+          
+          return [
+            r.machinerySerial,
+            r.driverName,
+            r.startLocation,
+            r.endLocation || "-",
+            new Date(r.date).toLocaleDateString("pt-BR"),
+            r.endDate ? new Date(r.endDate).toLocaleDateString("pt-BR") : "-",
+            r.status === "in_progress" ? "Em Andamento" : "Finalizada",
+            `${totalHours.toFixed(1)} h`,
+            `R$ ${r.hourlyRate.toFixed(2)}`,
+            `R$ ${totalValue.toFixed(2)}`,
+          ]
+        })
+
+        autoTable(doc, {
+          startY: yPos,
+          head: [["Máquina", "Motorista", "Origem", "Destino", "Início", "Fim", "Status", "Horas", "Valor/h", "Total"]],
+          body: rentalData,
+          theme: "grid",
+          headStyles: { fillColor: [99, 102, 241] },
+          margin: { left: 20, right: 20 },
+          columnStyles: {
+            0: { cellWidth: 20 },
+            1: { cellWidth: 20 },
+            2: { cellWidth: 20 },
+            3: { cellWidth: 20 },
+            4: { cellWidth: 18 },
+            5: { cellWidth: 18 },
+            6: { cellWidth: 18 },
+            7: { cellWidth: 15 },
+            8: { cellWidth: 18 },
+            9: { cellWidth: 18 },
+          },
+        })
+      }
+
+      doc.save("relatorio-locacoes.pdf")
+    },
+    [generateHeader],
+  )
   return {
     generateDashboardReport,
     generateFinanceReport,
@@ -498,5 +592,6 @@ export const usePdfReports = () => {
     generateTrucksReport,
     generateDriversReport,
     generateMachineryReport,
+    generateRentalsReport,
   }
 }

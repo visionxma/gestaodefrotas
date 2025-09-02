@@ -79,5 +79,33 @@ service cloud.firestore {
         request.resource.data.hours is number &&
         request.resource.data.hours >= 0;
     }
+    
+    // Regras para locações
+    match /rentals/{rentalId} {
+      // Permitir leitura apenas para o proprietário
+      allow read: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      
+      // Permitir criação com validações básicas
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.keys().hasAll([
+          'machineryId', 'driverId', 'startLocation', 
+          'initialHours', 'date', 'hourlyRate', 'status', 'userId'
+        ]) &&
+        request.resource.data.status == 'in_progress' &&
+        request.resource.data.initialHours is number &&
+        request.resource.data.initialHours >= 0 &&
+        request.resource.data.hourlyRate is number &&
+        request.resource.data.hourlyRate > 0;
+      
+      // Permitir atualizações para o proprietário
+      allow update: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      
+      // Permitir exclusão para o proprietário
+      allow delete: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+    }
   }
 }

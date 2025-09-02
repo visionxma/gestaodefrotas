@@ -7,6 +7,7 @@ import { useDrivers } from "@/hooks/use-drivers"
 import { useTransactions } from "@/hooks/use-transactions"
 import { useTrips } from "@/hooks/use-trips"
 import { useMachinery } from "@/hooks/use-machinery"
+import { useRentals } from "@/hooks/use-rentals"
 
 interface EnhancedStatsCardsProps {
   period: string
@@ -20,6 +21,7 @@ export function EnhancedStatsCards({ period, truckFilter, driverFilter }: Enhanc
   const { machinery } = useMachinery()
   const { getFilteredStats } = useTransactions()
   const { trips } = useTrips()
+  const { rentals } = useRentals()
 
   const filteredTrucks = truckFilter ? trucks.filter((t) => t.id === truckFilter) : trucks
   const filteredDrivers = driverFilter ? drivers.filter((d) => d.id === driverFilter) : drivers
@@ -41,11 +43,14 @@ export function EnhancedStatsCards({ period, truckFilter, driverFilter }: Enhanc
     .filter((trip) => trip.status === "completed")
     .reduce((sum, trip) => sum + (trip.endKm - trip.startKm), 0)
 
+  const activeRentals = rentals.filter((rental) => rental.status === "in_progress").length
+  const completedRentals = rentals.filter((rental) => rental.status === "completed").length
+
   const revenueChange = Math.random() * 20 - 10 // Simulação de variação
   const profitChange = Math.random() * 30 - 15
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-8">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Caminhões</CardTitle>
@@ -71,6 +76,18 @@ export function EnhancedStatsCards({ period, truckFilter, driverFilter }: Enhanc
           </p>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Locações</CardTitle>
+          <Settings className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{activeRentals}</div>
+          <p className="text-xs text-muted-foreground">{completedRentals} finalizadas</p>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Motoristas</CardTitle>

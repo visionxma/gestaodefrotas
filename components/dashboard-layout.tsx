@@ -19,6 +19,7 @@ const navigation = [
   { name: "Máquinas", href: "/machinery", icon: Settings },
   { name: "Motoristas", href: "/drivers", icon: Users },
   { name: "Viagens", href: "/trips", icon: MapPin },
+  { name: "Locações", href: "/rentals", icon: Settings },
   { name: "Financeiro", href: "/finance", icon: DollarSign },
   { name: "Configurações", href: "/settings", icon: Settings },
 ]

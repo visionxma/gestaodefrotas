@@ -12,6 +12,7 @@ import type { Transaction } from "@/hooks/use-transactions"
 import { useTrucks } from "@/hooks/use-trucks"
 import { useDrivers } from "@/hooks/use-drivers"
 import { useTrips } from "@/hooks/use-trips" // Importado hook de viagens
+import { useRentals } from "@/hooks/use-rentals" // Importado hook de locações
 
 interface TransactionFormProps {
   transaction?: Transaction
@@ -38,6 +39,7 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
   const { trucks } = useTrucks()
   const { drivers } = useDrivers()
   const { trips } = useTrips() // Adicionado hook de viagens
+  const { rentals } = useRentals() // Adicionado hook de locações
 
   const [formData, setFormData] = useState({
     type: transaction?.type || ("receita" as const),
@@ -48,6 +50,7 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
     truckId: transaction?.truckId || undefined,
     driverId: transaction?.driverId || undefined,
     tripId: transaction?.tripId || undefined, // Adicionado campo tripId
+    rentalId: transaction?.rentalId || undefined, // Adicionado campo rentalId
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -57,6 +60,7 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
       truckId: formData.truckId || undefined,
       driverId: formData.driverId || undefined,
       tripId: formData.tripId || undefined, // Incluído tripId no submit
+      rentalId: formData.rentalId || undefined, // Incluído rentalId no submit
     })
   }
 
@@ -68,6 +72,7 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
   const categories = formData.type === "receita" ? revenueCategories : expenseCategories
 
   const completedTrips = trips.filter((trip) => trip.status === "completed")
+  const completedRentals = rentals.filter((rental) => rental.status === "completed")
 
   return (
     <Card>
@@ -176,6 +181,23 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
                   {completedTrips.map((trip) => (
                     <SelectItem key={trip.id} value={trip.id}>
                       {trip.startLocation} → {trip.endLocation} ({new Date(trip.startDate).toLocaleDateString("pt-BR")})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="rentalId">Locação (opcional)</Label>
+              <Select value={formData.rentalId || "none"} onValueChange={(value) => handleChange("rentalId", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione uma locação" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Nenhuma</SelectItem>
+                  {completedRentals.map((rental) => (
+                    <SelectItem key={rental.id} value={rental.id}>
+                      {rental.machinerySerial} - {rental.driverName} ({new Date(rental.date).toLocaleDateString("pt-BR")})
                     </SelectItem>
                   ))}
                 </SelectContent>
