@@ -44,15 +44,15 @@ export default function DashboardPage() {
   return (
     <ProtectedRoute>
       <DashboardLayout>
-        <div className="space-y-6">
+        <div className="mobile-spacing">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-balance">Dashboard</h1>
-              <p className="text-muted-foreground">Visão geral completa da sua frota e operações</p>
+              <h1 className="font-bold text-balance">Dashboard</h1>
+              <p className="text-muted-foreground text-sm sm:text-base">Visão geral completa da sua frota e operações</p>
             </div>
-            <Button onClick={handleDownloadPDF} variant="outline">
-              <Download className="h-4 w-4 mr-2" />
-              Baixar PDF
+            <Button onClick={handleDownloadPDF} variant="outline" size="sm" className="sm:size-default">
+              <Download className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Baixar PDF</span>
             </Button>
           </div>
 
@@ -67,7 +67,7 @@ export default function DashboardPage() {
 
           <EnhancedStatsCards period={selectedPeriod} truckFilter={selectedTruck} driverFilter={selectedDriver} />
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
             <RevenueExpenseChart period={selectedPeriod} truckFilter={selectedTruck} driverFilter={selectedDriver} />
             <TripsOverview truckFilter={selectedTruck} driverFilter={selectedDriver} />
           </div>

@@ -49,16 +49,29 @@ export function RevenueExpenseChart({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Receitas vs Despesas</CardTitle>
-        <CardDescription>{getDescription()}</CardDescription>
+      <CardHeader className="p-3 sm:p-4 lg:p-6">
+        <CardTitle className="text-base sm:text-lg">Receitas vs Despesas</CardTitle>
+        <CardDescription className="text-sm">{getDescription()}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 sm:p-4 lg:p-6 pt-0">
         <ChartContainer config={chartConfig}>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
             <BarChart data={chartData}>
-              <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} />
-              <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `R$ ${(value / 1000).toFixed(0)}k`} />
+              <XAxis 
+                dataKey="month" 
+                tickLine={false} 
+                tickMargin={10} 
+                axisLine={false}
+                fontSize={12}
+                className="sm:text-sm"
+              />
+              <YAxis 
+                tickLine={false} 
+                axisLine={false} 
+                tickFormatter={(value) => `R$ ${(value / 1000).toFixed(0)}k`}
+                fontSize={12}
+                className="sm:text-sm"
+              />
               <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
               <Bar dataKey="receita" fill="#dc2626" radius={4} />
               <Bar dataKey="despesa" fill="#374151" radius={4} />

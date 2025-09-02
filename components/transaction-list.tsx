@@ -77,23 +77,23 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle>Filtros</CardTitle>
+        <CardHeader className="responsive-card-padding">
+          <CardTitle className="text-base sm:text-lg">Filtros</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <CardContent className="responsive-card-padding pt-0">
+          <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar transações..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className="pl-9 h-10 sm:h-9"
               />
             </div>
 
             <Select value={filterType} onValueChange={(value: any) => setFilterType(value)}>
-              <SelectTrigger>
+              <SelectTrigger className="h-10 sm:h-9">
                 <SelectValue placeholder="Tipo" />
               </SelectTrigger>
               <SelectContent>
@@ -104,7 +104,7 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
             </Select>
 
             <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger>
+              <SelectTrigger className="h-10 sm:h-9">
                 <SelectValue placeholder="Categoria" />
               </SelectTrigger>
               <SelectContent>
@@ -117,7 +117,7 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
               </SelectContent>
             </Select>
 
-            <div className="text-sm text-muted-foreground flex items-center">
+            <div className="text-sm text-muted-foreground flex items-center justify-center sm:justify-start">
               {filteredTransactions.length} transação(ões)
             </div>
           </div>
@@ -126,9 +126,9 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
 
       {filteredTransactions.length === 0 ? (
         <Card>
-          <CardContent className="text-center py-8">
-            <h3 className="text-lg font-medium mb-2">Nenhuma transação encontrada</h3>
-            <p className="text-muted-foreground">
+          <CardContent className="text-center py-8 responsive-card-padding">
+            <h3 className="text-base sm:text-lg font-medium mb-2">Nenhuma transação encontrada</h3>
+            <p className="text-muted-foreground text-sm">
               {transactions.length === 0
                 ? "Adicione sua primeira transação para começar o controle financeiro."
                 : "Tente ajustar os filtros para encontrar as transações desejadas."}
@@ -136,11 +136,11 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {filteredTransactions.map((transaction) => (
             <Card key={transaction.id}>
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <CardContent className="responsive-card-padding">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div
                       className={`p-2 rounded-full flex-shrink-0 ${
@@ -154,17 +154,17 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="font-medium truncate">{transaction.description}</h4>
-                      <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-1">
+                      <h4 className="font-medium text-sm sm:text-base truncate leading-tight">{transaction.description}</h4>
+                      <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground mt-1">
                         <span>{new Date(transaction.date).toLocaleDateString("pt-BR")}</span>
                         <Badge variant="outline">{transaction.category}</Badge>
                         {getTruckName(transaction.truckId) && (
-                          <Badge variant="secondary" className="hidden sm:inline-flex">
+                          <Badge variant="secondary" className="hidden md:inline-flex text-xs">
                             {getTruckName(transaction.truckId)}
                           </Badge>
                         )}
                         {getDriverName(transaction.driverId) && (
-                          <Badge variant="secondary" className="hidden sm:inline-flex">
+                          <Badge variant="secondary" className="hidden md:inline-flex text-xs">
                             {getDriverName(transaction.driverId)}
                           </Badge>
                         )}
@@ -172,9 +172,9 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-3">
+                  <div className="flex items-center justify-between lg:justify-end gap-3">
                     <div className="text-right">
-                      <p className={`font-bold ${transaction.type === "receita" ? "text-green-600" : "text-red-600"}`}>
+                      <p className={`font-bold text-sm sm:text-base ${transaction.type === "receita" ? "text-green-600" : "text-red-600"}`}>
                         {transaction.type === "receita" ? "+" : "-"}R${" "}
                         {transaction.amount.toLocaleString("pt-BR", {
                           minimumFractionDigits: 2,
@@ -183,11 +183,11 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
                     </div>
 
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => onEdit(transaction)}>
-                        <Edit className="h-4 w-4 sm:mr-2" />
-                        <span className="hidden sm:inline">Editar</span>
+                      <Button size="sm" variant="outline" onClick={() => onEdit(transaction)} className="h-8">
+                        <Edit className="h-4 w-4 sm:mr-1" />
+                        <span className="hidden sm:inline text-xs">Editar</span>
                       </Button>
-                      <Button size="sm" variant="destructive" onClick={() => setDeleteId(transaction.id)}>
+                      <Button size="sm" variant="destructive" onClick={() => setDeleteId(transaction.id)} className="h-8">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>

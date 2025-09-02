@@ -69,16 +69,16 @@ export function TruckList({ trucks, onEdit, onDelete, isLoading }: TruckListProp
 
   return (
     <>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="responsive-grid gap-4">
         {trucks.map((truck) => (
           <Card key={truck.id}>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-3 responsive-card-padding">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{truck.plate}</CardTitle>
+                <CardTitle className="text-base sm:text-lg">{truck.plate}</CardTitle>
                 <Badge variant={statusColors[truck.status]}>{statusLabels[truck.status]}</Badge>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="responsive-card-padding pt-0">
               <div className="space-y-2 text-sm">
                 <p>
                   <span className="font-medium">Marca:</span> {truck.brand}
@@ -99,12 +99,12 @@ export function TruckList({ trucks, onEdit, onDelete, isLoading }: TruckListProp
                 </p>
               </div>
 
-              <div className="flex gap-2 mt-4">
-                <Button size="sm" variant="outline" onClick={() => onEdit(truck)}>
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                <Button size="sm" variant="outline" onClick={() => onEdit(truck)} className="flex-1 sm:flex-none">
                   <div className="h-4 w-4 mr-1"></div>
                   Editar
                 </Button>
-                <Button size="sm" variant="destructive" onClick={() => setDeleteId(truck.id)}>
+                <Button size="sm" variant="destructive" onClick={() => setDeleteId(truck.id)} className="flex-1 sm:flex-none">
                   <Trash2 className="h-4 w-4 mr-1" />
                   Excluir
                 </Button>

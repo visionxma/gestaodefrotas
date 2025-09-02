@@ -78,16 +78,16 @@ export function MachineryList({ machinery, onEdit, onDelete, isLoading }: Machin
 
   return (
     <>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="responsive-grid gap-4">
         {machinery.map((machine) => (
           <Card key={machine.id}>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-3 responsive-card-padding">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{machine.serialNumber}</CardTitle>
+                <CardTitle className="text-base sm:text-lg leading-tight">{machine.serialNumber}</CardTitle>
                 <Badge variant={statusColors[machine.status]}>{statusLabels[machine.status]}</Badge>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="responsive-card-padding pt-0">
               <div className="space-y-2 text-sm">
                 <p>
                   <span className="font-medium">Tipo:</span> {typeLabels[machine.type]}
@@ -106,12 +106,12 @@ export function MachineryList({ machinery, onEdit, onDelete, isLoading }: Machin
                 </p>
               </div>
 
-              <div className="flex gap-2 mt-4">
-                <Button size="sm" variant="outline" onClick={() => onEdit(machine)}>
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                <Button size="sm" variant="outline" onClick={() => onEdit(machine)} className="flex-1 sm:flex-none">
                   <div className="h-4 w-4 mr-1"></div>
                   Editar
                 </Button>
-                <Button size="sm" variant="destructive" onClick={() => setDeleteId(machine.id)}>
+                <Button size="sm" variant="destructive" onClick={() => setDeleteId(machine.id)} className="flex-1 sm:flex-none">
                   <Trash2 className="h-4 w-4 mr-1" />
                   Excluir
                 </Button>

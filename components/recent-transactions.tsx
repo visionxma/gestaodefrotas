@@ -28,19 +28,19 @@ export function RecentTransactions() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Transações Recentes</CardTitle>
-        <CardDescription>Últimas movimentações financeiras</CardDescription>
+      <CardHeader className="p-3 sm:p-4 lg:p-6">
+        <CardTitle className="text-base sm:text-lg">Transações Recentes</CardTitle>
+        <CardDescription className="text-sm">Últimas movimentações financeiras</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 sm:p-4 lg:p-6 pt-0">
         {recentTransactions.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">Nenhuma transação registrada ainda.</p>
+            <p className="text-muted-foreground text-sm">Nenhuma transação registrada ainda.</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {recentTransactions.map((transaction) => (
-              <div key={transaction.id} className="flex items-center justify-between">
+              <div key={transaction.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                 <div className="flex items-center gap-3">
                   <div
                     className={`p-2 rounded-full ${
@@ -54,19 +54,19 @@ export function RecentTransactions() {
                     )}
                   </div>
                   <div>
-                    <p className="font-medium text-sm">{transaction.description}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="font-medium text-sm leading-tight">{transaction.description}</p>
+                    <p className="text-xs text-muted-foreground leading-tight">
                       {getTruckName(transaction.truckId) || getDriverName(transaction.driverId) || "Geral"} •{" "}
                       {new Date(transaction.date).toLocaleDateString("pt-BR")}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className={`font-medium ${transaction.type === "receita" ? "text-green-600" : "text-red-600"}`}>
+                  <p className={`font-medium text-sm sm:text-base ${transaction.type === "receita" ? "text-green-600" : "text-red-600"}`}>
                     {transaction.type === "receita" ? "+" : "-"}R${" "}
                     {transaction.amount.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </p>
-                  <Badge variant={transaction.type === "receita" ? "default" : "secondary"} className="text-xs">
+                  <Badge variant={transaction.type === "receita" ? "default" : "secondary"} className="text-xs mt-1">
                     {transaction.type}
                   </Badge>
                 </div>

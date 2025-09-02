@@ -49,60 +49,64 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+    <div className="min-h-screen flex items-center justify-center bg-background p-3 sm:p-4">
+      <Card className="w-full max-w-sm sm:max-w-md">
+        <CardHeader className="text-center responsive-card-padding">
           <div className="flex justify-center mb-4">
             <div className="p-3 bg-primary rounded-full">
-              <Truck className="h-8 w-8 text-primary-foreground" />
+              <Truck className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">Criar Conta</CardTitle>
-          <CardDescription>Cadastre-se para começar a gerenciar sua frota</CardDescription>
+          <CardTitle className="text-xl sm:text-2xl font-bold">Criar Conta</CardTitle>
+          <CardDescription className="text-sm">Cadastre-se para começar a gerenciar sua frota</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <CardContent className="responsive-card-padding pt-0">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name">Nome Completo</Label>
+              <Label htmlFor="name" className="text-sm">Nome Completo</Label>
               <Input
                 id="name"
                 type="text"
                 placeholder="Seu nome completo"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                className="h-11 sm:h-10"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="company">Empresa</Label>
+              <Label htmlFor="company" className="text-sm">Empresa</Label>
               <Input
                 id="company"
                 type="text"
                 placeholder="Nome da sua empresa"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
+                className="h-11 sm:h-10"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm">Email</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="h-11 sm:h-10"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
+              <Label htmlFor="password" className="text-sm">Senha</Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="Crie uma senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="h-11 sm:h-10"
                 required
                 minLength={6}
               />
@@ -159,13 +163,13 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {error && <div className="text-destructive text-sm text-center">{error}</div>}
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            {error && <div className="text-destructive text-sm text-center leading-tight">{error}</div>}
+            <Button type="submit" className="w-full h-11 sm:h-10" disabled={isLoading}>
               {isLoading ? "Criando conta..." : "Criar Conta"}
             </Button>
           </form>
           <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-tight">
               Já tem uma conta?{" "}
               <Link href="/login" className="text-primary hover:underline">
                 Faça login

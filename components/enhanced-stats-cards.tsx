@@ -50,89 +50,89 @@ export function EnhancedStatsCards({ period, truckFilter, driverFilter }: Enhanc
   const profitChange = Math.random() * 30 - 15
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-8">
+    <div className="responsive-stats-grid gap-3 sm:gap-4">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Caminhões</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+          <CardTitle className="text-xs sm:text-sm font-medium">Caminhões</CardTitle>
           <Truck className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{filteredTrucks.length}</div>
-          <p className="text-xs text-muted-foreground">
+        <CardContent className="p-3 sm:p-4 pt-0">
+          <div className="text-xl sm:text-2xl font-bold">{filteredTrucks.length}</div>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {filteredTrucks.filter((t) => t.status === "active").length} ativos
           </p>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Máquinas</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+          <CardTitle className="text-xs sm:text-sm font-medium">Máquinas</CardTitle>
           <Settings className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{machinery.length}</div>
-          <p className="text-xs text-muted-foreground">
+        <CardContent className="p-3 sm:p-4 pt-0">
+          <div className="text-xl sm:text-2xl font-bold">{machinery.length}</div>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {machinery.filter((m) => m.status === "active").length} ativas
           </p>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Locações</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+          <CardTitle className="text-xs sm:text-sm font-medium">Locações</CardTitle>
           <Settings className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{activeRentals}</div>
-          <p className="text-xs text-muted-foreground">{completedRentals} finalizadas</p>
+        <CardContent className="p-3 sm:p-4 pt-0">
+          <div className="text-xl sm:text-2xl font-bold">{activeRentals}</div>
+          <p className="text-xs sm:text-sm text-muted-foreground">{completedRentals} finalizadas</p>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Motoristas</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+          <CardTitle className="text-xs sm:text-sm font-medium">Motoristas</CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{filteredDrivers.length}</div>
-          <p className="text-xs text-muted-foreground">
+        <CardContent className="p-3 sm:p-4 pt-0">
+          <div className="text-xl sm:text-2xl font-bold">{filteredDrivers.length}</div>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {filteredDrivers.filter((d) => d.status === "active").length} disponíveis
           </p>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Viagens</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+          <CardTitle className="text-xs sm:text-sm font-medium">Viagens</CardTitle>
           <MapPin className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{activeTrips}</div>
-          <p className="text-xs text-muted-foreground">{completedTrips} concluídas</p>
+        <CardContent className="p-3 sm:p-4 pt-0">
+          <div className="text-xl sm:text-2xl font-bold">{activeTrips}</div>
+          <p className="text-xs sm:text-sm text-muted-foreground">{completedTrips} concluídas</p>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">KM Rodados</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+          <CardTitle className="text-xs sm:text-sm font-medium">KM Rodados</CardTitle>
           <Fuel className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{totalKm.toLocaleString()}</div>
-          <p className="text-xs text-muted-foreground">
+        <CardContent className="p-3 sm:p-4 pt-0">
+          <div className="text-xl sm:text-2xl font-bold">{totalKm.toLocaleString()}</div>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {totalKm > 0 ? (totalKm / Math.max(completedTrips, 1)).toFixed(0) : 0} km/viagem
           </p>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Receita</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+          <CardTitle className="text-xs sm:text-sm font-medium">Receita</CardTitle>
           <TrendingUp className="h-4 w-4 text-green-600" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-green-600">R$ {revenue.toLocaleString("pt-BR")}</div>
-          <p className={`text-xs ${revenueChange >= 0 ? "text-green-600" : "text-red-600"}`}>
+        <CardContent className="p-3 sm:p-4 pt-0">
+          <div className="text-xl sm:text-2xl font-bold text-green-600">R$ {revenue.toLocaleString("pt-BR")}</div>
+          <p className={`text-xs sm:text-sm ${revenueChange >= 0 ? "text-green-600" : "text-red-600"}`}>
             {revenueChange >= 0 ? "+" : ""}
             {revenueChange.toFixed(1)}% vs anterior
           </p>
@@ -140,13 +140,13 @@ export function EnhancedStatsCards({ period, truckFilter, driverFilter }: Enhanc
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Lucro</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+          <CardTitle className="text-xs sm:text-sm font-medium">Lucro</CardTitle>
           <TrendingUp className="h-4 w-4 text-primary" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-primary">R$ {profit.toLocaleString("pt-BR")}</div>
-          <p className={`text-xs ${profitChange >= 0 ? "text-green-600" : "text-red-600"}`}>
+        <CardContent className="p-3 sm:p-4 pt-0">
+          <div className="text-xl sm:text-2xl font-bold text-primary">R$ {profit.toLocaleString("pt-BR")}</div>
+          <p className={`text-xs sm:text-sm ${profitChange >= 0 ? "text-green-600" : "text-red-600"}`}>
             {profitChange >= 0 ? "+" : ""}
             {profitChange.toFixed(1)}% margem
           </p>

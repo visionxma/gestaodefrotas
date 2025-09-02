@@ -59,28 +59,28 @@ export function TripsOverview({ truckFilter, driverFilter }: TripsOverviewProps)
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Viagens Recentes</CardTitle>
-        <CardDescription>Últimas viagens registradas</CardDescription>
+      <CardHeader className="p-3 sm:p-4 lg:p-6">
+        <CardTitle className="text-base sm:text-lg">Viagens Recentes</CardTitle>
+        <CardDescription className="text-sm">Últimas viagens registradas</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 sm:p-4 lg:p-6 pt-0">
         {filteredTrips.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">Nenhuma viagem registrada ainda.</p>
+            <p className="text-muted-foreground text-sm">Nenhuma viagem registrada ainda.</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {filteredTrips.map((trip) => (
-              <div key={trip.id} className="flex items-center justify-between p-3 border rounded-lg">
+              <div key={trip.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg gap-3 sm:gap-0">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-blue-100 text-blue-600 rounded-full">
                     <MapPin className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="font-medium text-sm">
+                    <p className="font-medium text-sm leading-tight">
                       {trip.startLocation} → {trip.endLocation || "Em andamento"}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs text-muted-foreground leading-tight">
                       <Truck className="h-3 w-3" />
                       <span>{getTruckPlate(trip.truckId)}</span>
                       <span>•</span>
@@ -91,10 +91,10 @@ export function TripsOverview({ truckFilter, driverFilter }: TripsOverviewProps)
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <Badge className={`text-xs ${getStatusColor(trip.status)}`}>{getStatusText(trip.status)}</Badge>
+                <div className="text-right sm:text-left">
+                  <Badge className={`text-xs mb-1 ${getStatusColor(trip.status)}`}>{getStatusText(trip.status)}</Badge>
                   {trip.status === "completed" && (
-                    <p className="text-xs text-muted-foreground mt-1">{trip.endKm - trip.startKm} km</p>
+                    <p className="text-xs text-muted-foreground">{trip.endKm - trip.startKm} km</p>
                   )}
                 </div>
               </div>

@@ -36,10 +36,10 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
   if (trips.length === 0) {
     return (
       <Card>
-        <CardContent className="p-12 text-center">
+        <CardContent className="p-8 sm:p-12 text-center">
           <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Nenhuma viagem encontrada</h3>
-          <p className="text-muted-foreground">Comece adicionando uma nova viagem à sua frota.</p>
+          <h3 className="text-base sm:text-lg font-semibold mb-2">Nenhuma viagem encontrada</h3>
+          <p className="text-muted-foreground text-sm">Comece adicionando uma nova viagem à sua frota.</p>
         </CardContent>
       </Card>
     )
@@ -61,23 +61,23 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {trips.map((trip) => (
         <Card key={trip.id}>
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between mb-4">
+          <CardContent className="responsive-card-padding">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-3 sm:gap-0">
               <div className="flex items-center gap-2">
                 {getStatusBadge(trip.status)}
-                <span className="text-sm text-muted-foreground">{formatDateTime(trip.startDate, trip.startTime)}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">{formatDateTime(trip.startDate, trip.startTime)}</span>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 {onViewDetails && (
-                  <Button size="sm" variant="outline" onClick={() => onViewDetails(trip)} className="h-8">
+                  <Button size="sm" variant="outline" onClick={() => onViewDetails(trip)} className="h-8 text-xs">
                     Ver Detalhes
                   </Button>
                 )}
                 {trip.status === "in_progress" && (
-                  <Button size="sm" onClick={() => onComplete(trip)} className="h-8">
+                  <Button size="sm" onClick={() => onComplete(trip)} className="h-8 text-xs">
                     <CheckCircle className="h-4 w-4 mr-1" />
                     Finalizar
                   </Button>
@@ -86,35 +86,35 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
                   size="sm"
                   variant="outline"
                   onClick={() => onDelete(trip.id)}
-                  className="h-8 text-destructive hover:text-destructive"
+                  className="h-8 text-xs text-destructive hover:text-destructive"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <div className="flex items-center gap-2">
                 <Truck className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{trip.truckPlate}</p>
-                  <p className="text-xs text-muted-foreground">Caminhão</p>
+                  <p className="text-sm font-medium leading-tight">{trip.truckPlate}</p>
+                  <p className="text-xs text-muted-foreground leading-tight">Caminhão</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{trip.driverName}</p>
-                  <p className="text-xs text-muted-foreground">Motorista</p>
+                  <p className="text-sm font-medium leading-tight">{trip.driverName}</p>
+                  <p className="text-xs text-muted-foreground leading-tight">Motorista</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{trip.startLocation}</p>
-                  <p className="text-xs text-muted-foreground">Origem</p>
+                  <p className="text-sm font-medium leading-tight">{trip.startLocation}</p>
+                  <p className="text-xs text-muted-foreground leading-tight">Origem</p>
                 </div>
               </div>
 
@@ -122,8 +122,8 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-primary" />
                   <div>
-                    <p className="text-sm font-medium">{trip.endLocation}</p>
-                    <p className="text-xs text-muted-foreground">Destino</p>
+                    <p className="text-sm font-medium leading-tight">{trip.endLocation}</p>
+                    <p className="text-xs text-muted-foreground leading-tight">Destino</p>
                   </div>
                 </div>
               )}
@@ -131,13 +131,13 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
 
             {(trip.weightTons || trip.freightValue || trip.netProfit !== undefined) && (
               <div className="mt-4 pt-4 border-t">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   {trip.weightTons && (
                     <div className="flex items-center gap-2">
                       <Weight className="h-4 w-4 text-blue-500" />
                       <div>
-                        <p className="text-sm font-medium">{trip.weightTons} t</p>
-                        <p className="text-xs text-muted-foreground">Peso</p>
+                        <p className="text-sm font-medium leading-tight">{trip.weightTons} t</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Peso</p>
                       </div>
                     </div>
                   )}
@@ -146,8 +146,8 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-4 w-4 text-green-500" />
                       <div>
-                        <p className="text-sm font-medium">R$ {trip.freightValue.toFixed(2)}</p>
-                        <p className="text-xs text-muted-foreground">Valor do Frete</p>
+                        <p className="text-sm font-medium leading-tight">R$ {trip.freightValue.toFixed(2)}</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Valor do Frete</p>
                       </div>
                     </div>
                   )}
@@ -156,8 +156,8 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-4 w-4 text-red-500" />
                       <div>
-                        <p className="text-sm font-medium">R$ {trip.totalExpenses.toFixed(2)}</p>
-                        <p className="text-xs text-muted-foreground">Despesas</p>
+                        <p className="text-sm font-medium leading-tight">R$ {trip.totalExpenses.toFixed(2)}</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Despesas</p>
                       </div>
                     </div>
                   )}
@@ -166,10 +166,10 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
                     <div className="flex items-center gap-2">
                       <DollarSign className={`h-4 w-4 ${trip.netProfit >= 0 ? "text-green-600" : "text-red-600"}`} />
                       <div>
-                        <p className={`text-sm font-medium ${trip.netProfit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                        <p className={`text-sm font-medium leading-tight ${trip.netProfit >= 0 ? "text-green-600" : "text-red-600"}`}>
                           R$ {trip.netProfit.toFixed(2)}
                         </p>
-                        <p className="text-xs text-muted-foreground">Lucro Líquido</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Lucro Líquido</p>
                       </div>
                     </div>
                   )}
@@ -178,27 +178,27 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
             )}
 
             <div className="mt-4 pt-4 border-t">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm">
                 <div>
                   <span className="text-muted-foreground">KM Inicial:</span>
-                  <p className="font-medium">{trip.startKm.toLocaleString()}</p>
+                  <p className="font-medium leading-tight">{trip.startKm.toLocaleString()}</p>
                 </div>
                 {trip.endKm && (
                   <>
                     <div>
                       <span className="text-muted-foreground">KM Final:</span>
-                      <p className="font-medium">{trip.endKm.toLocaleString()}</p>
+                      <p className="font-medium leading-tight">{trip.endKm.toLocaleString()}</p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">KM Percorridos:</span>
-                      <p className="font-medium text-primary">{(trip.endKm - trip.startKm).toLocaleString()}</p>
+                      <p className="font-medium text-primary leading-tight">{(trip.endKm - trip.startKm).toLocaleString()}</p>
                     </div>
                   </>
                 )}
                 {trip.endDate && trip.endTime && (
                   <div>
                     <span className="text-muted-foreground">Finalizada em:</span>
-                    <p className="font-medium">{formatDateTime(trip.endDate, trip.endTime)}</p>
+                    <p className="font-medium leading-tight">{formatDateTime(trip.endDate, trip.endTime)}</p>
                   </div>
                 )}
               </div>

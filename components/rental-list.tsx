@@ -39,10 +39,10 @@ export function RentalList({ rentals, onComplete, onDelete, onViewDetails, isLoa
   if (rentals.length === 0) {
     return (
       <Card>
-        <CardContent className="p-12 text-center">
+        <CardContent className="p-8 sm:p-12 text-center">
           <Settings className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Nenhuma locação encontrada</h3>
-          <p className="text-muted-foreground">Comece adicionando uma nova locação de máquina.</p>
+          <h3 className="text-base sm:text-lg font-semibold mb-2">Nenhuma locação encontrada</h3>
+          <p className="text-muted-foreground text-sm">Comece adicionando uma nova locação de máquina.</p>
         </CardContent>
       </Card>
     )
@@ -64,26 +64,26 @@ export function RentalList({ rentals, onComplete, onDelete, onViewDetails, isLoa
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {rentals.map((rental) => {
         const stats = calculateRentalStats(rental)
         
         return (
           <Card key={rental.id}>
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
+            <CardContent className="responsive-card-padding">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-3 sm:gap-0">
                 <div className="flex items-center gap-2">
                   {getStatusBadge(rental.status)}
-                  <span className="text-sm text-muted-foreground">{formatDate(rental.date)}</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">{formatDate(rental.date)}</span>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   {onViewDetails && (
-                    <Button size="sm" variant="outline" onClick={() => onViewDetails(rental)} className="h-8">
+                    <Button size="sm" variant="outline" onClick={() => onViewDetails(rental)} className="h-8 text-xs">
                       Ver Detalhes
                     </Button>
                   )}
                   {rental.status === "in_progress" && (
-                    <Button size="sm" onClick={() => onComplete(rental)} className="h-8">
+                    <Button size="sm" onClick={() => onComplete(rental)} className="h-8 text-xs">
                       <CheckCircle className="h-4 w-4 mr-1" />
                       Finalizar
                     </Button>
@@ -92,79 +92,79 @@ export function RentalList({ rentals, onComplete, onDelete, onViewDetails, isLoa
                     size="sm"
                     variant="outline"
                     onClick={() => onDelete(rental.id)}
-                    className="h-8 text-destructive hover:text-destructive"
+                    className="h-8 text-xs text-destructive hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div className="flex items-center gap-2">
                   <Settings className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-medium">{rental.machinerySerial}</p>
-                    <p className="text-xs text-muted-foreground">Máquina</p>
+                    <p className="text-sm font-medium leading-tight">{rental.machinerySerial}</p>
+                    <p className="text-xs text-muted-foreground leading-tight">Máquina</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-medium">{rental.driverName}</p>
-                    <p className="text-xs text-muted-foreground">Motorista</p>
+                    <p className="text-sm font-medium leading-tight">{rental.driverName}</p>
+                    <p className="text-xs text-muted-foreground leading-tight">Motorista</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-medium">{rental.initialHours.toLocaleString()} h</p>
-                    <p className="text-xs text-muted-foreground">Horímetro Inicial</p>
+                    <p className="text-sm font-medium leading-tight">{rental.initialHours.toLocaleString()} h</p>
+                    <p className="text-xs text-muted-foreground leading-tight">Horímetro Inicial</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-green-500" />
                   <div>
-                    <p className="text-sm font-medium">R$ {rental.hourlyRate.toFixed(2)}/h</p>
-                    <p className="text-xs text-muted-foreground">Valor da Hora</p>
+                    <p className="text-sm font-medium leading-tight">R$ {rental.hourlyRate.toFixed(2)}/h</p>
+                    <p className="text-xs text-muted-foreground leading-tight">Valor da Hora</p>
                   </div>
                 </div>
               </div>
 
               {rental.status === "completed" && (
                 <div className="mt-4 pt-4 border-t">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-blue-500" />
                       <div>
-                        <p className="text-sm font-medium">{stats.totalHours} h</p>
-                        <p className="text-xs text-muted-foreground">Horas Trabalhadas</p>
+                        <p className="text-sm font-medium leading-tight">{stats.totalHours} h</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Horas Trabalhadas</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-purple-500" />
                       <div>
-                        <p className="text-sm font-medium">{stats.workingDays} dias</p>
-                        <p className="text-xs text-muted-foreground">Dias Trabalhados</p>
+                        <p className="text-sm font-medium leading-tight">{stats.workingDays} dias</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Dias Trabalhados</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-orange-500" />
                       <div>
-                        <p className="text-sm font-medium">{stats.effectiveHours} h</p>
-                        <p className="text-xs text-muted-foreground">Horas Efetivas</p>
+                        <p className="text-sm font-medium leading-tight">{stats.effectiveHours} h</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Horas Efetivas</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-4 w-4 text-green-600" />
                       <div>
-                        <p className="text-sm font-medium text-green-600">R$ {stats.totalValue.toFixed(2)}</p>
-                        <p className="text-xs text-muted-foreground">Valor Total</p>
+                        <p className="text-sm font-medium text-green-600 leading-tight">R$ {stats.totalValue.toFixed(2)}</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Valor Total</p>
                       </div>
                     </div>
                   </div>
@@ -172,21 +172,21 @@ export function RentalList({ rentals, onComplete, onDelete, onViewDetails, isLoa
               )}
 
               <div className="mt-4 pt-4 border-t">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
                   <div>
                     <span className="text-muted-foreground">Local de Saída:</span>
-                    <p className="font-medium">{rental.startLocation}</p>
+                    <p className="font-medium leading-tight">{rental.startLocation}</p>
                   </div>
                   {rental.endLocation && (
                     <div>
                       <span className="text-muted-foreground">Local de Entrega:</span>
-                      <p className="font-medium">{rental.endLocation}</p>
+                      <p className="font-medium leading-tight">{rental.endLocation}</p>
                     </div>
                   )}
                   {rental.finalHours && (
                     <div>
                       <span className="text-muted-foreground">Horímetro Final:</span>
-                      <p className="font-medium">{rental.finalHours.toLocaleString()} h</p>
+                      <p className="font-medium leading-tight">{rental.finalHours.toLocaleString()} h</p>
                     </div>
                   )}
                 </div>

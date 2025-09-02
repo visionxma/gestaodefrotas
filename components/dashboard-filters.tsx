@@ -57,17 +57,18 @@ export function DashboardFilters({
 
   return (
     <Card>
-      <CardContent className="p-4">
-        <div className="flex flex-wrap items-center gap-4">
+      <CardContent className="p-3 sm:p-4">
+        <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Filtros:</span>
+            <span className="text-sm font-medium hidden sm:inline">Filtros:</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <Select value={selectedPeriod} onValueChange={onPeriodChange}>
-              <SelectTrigger className="w-40">
+                <SelectTrigger className="w-full sm:w-40">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -80,8 +81,8 @@ export function DashboardFilters({
             </Select>
           </div>
 
-          <Select value={selectedTruck || "all"} onValueChange={handleTruckChange}>
-            <SelectTrigger className="w-40">
+            <Select value={selectedTruck || "all"} onValueChange={handleTruckChange}>
+              <SelectTrigger className="w-full sm:w-40">
               <SelectValue placeholder="Todos os caminhões" />
             </SelectTrigger>
             <SelectContent>
@@ -94,8 +95,8 @@ export function DashboardFilters({
             </SelectContent>
           </Select>
 
-          <Select value={selectedDriver || "all"} onValueChange={handleDriverChange}>
-            <SelectTrigger className="w-40">
+            <Select value={selectedDriver || "all"} onValueChange={handleDriverChange}>
+              <SelectTrigger className="w-full sm:w-40">
               <SelectValue placeholder="Todos os motoristas" />
             </SelectTrigger>
             <SelectContent>
@@ -108,9 +109,10 @@ export function DashboardFilters({
             </SelectContent>
           </Select>
 
-          <Button variant="outline" size="sm" onClick={clearFilters}>
+            <Button variant="outline" size="sm" onClick={clearFilters} className="w-full sm:w-auto">
             Limpar filtros
           </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

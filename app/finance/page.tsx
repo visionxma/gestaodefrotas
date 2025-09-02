@@ -106,20 +106,20 @@ export default function FinancePage() {
   return (
     <ProtectedRoute>
       <DashboardLayout>
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
+        <div className="mobile-spacing">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
             <div>
-              <h1 className="text-3xl font-bold text-balance">Financeiro</h1>
-              <p className="text-muted-foreground">Controle suas receitas e despesas</p>
+              <h1 className="font-bold text-balance">Financeiro</h1>
+              <p className="text-muted-foreground text-sm sm:text-base">Controle suas receitas e despesas</p>
             </div>
-            <div className="flex gap-2">
-              <Button onClick={handleDownloadPDF} variant="outline">
-                <Download className="h-4 w-4 mr-2" />
-                Baixar PDF
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button onClick={handleDownloadPDF} variant="outline" className="h-10 sm:h-9">
+                <Download className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Baixar PDF</span>
               </Button>
               {!showForm && (
-                <Button onClick={() => setShowForm(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
+                <Button onClick={() => setShowForm(true)} className="h-10 sm:h-9">
+                  <Plus className="h-4 w-4 sm:mr-2" />
                   Nova Transação
                 </Button>
               )}

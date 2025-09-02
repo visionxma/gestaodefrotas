@@ -93,76 +93,78 @@ export default function SettingsPage() {
   return (
     <ProtectedRoute>
       <DashboardLayout>
-        <div className="space-y-6">
+        <div className="mobile-spacing">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
-            <p className="text-muted-foreground">Gerencie suas configurações de conta e preferências do sistema</p>
+            <h1 className="font-bold tracking-tight">Configurações</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">Gerencie suas configurações de conta e preferências do sistema</p>
           </div>
 
-          <div className="grid gap-6">
+          <div className="grid gap-4 sm:gap-6">
             {/* Informações da Conta */}
             <Card>
-              <CardHeader>
+              <CardHeader className="responsive-card-padding">
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <User className="h-5 w-5" />
-                    Informações da Conta
+                    <span className="text-base sm:text-lg">Informações da Conta</span>
                   </div>
                   {!isEditing ? (
-                    <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Editar
+                    <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} className="h-8 text-xs">
+                      <Edit className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Editar</span>
                     </Button>
                   ) : (
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={handleCancel} disabled={isUpdating}>
-                        <X className="h-4 w-4 mr-2" />
-                        Cancelar
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Button variant="outline" size="sm" onClick={handleCancel} disabled={isUpdating} className="h-8 text-xs">
+                        <X className="h-4 w-4 sm:mr-1" />
+                        <span className="hidden sm:inline">Cancelar</span>
                       </Button>
-                      <Button size="sm" onClick={handleSave} disabled={isUpdating}>
-                        <Save className="h-4 w-4 mr-2" />
-                        {isUpdating ? "Salvando..." : "Salvar"}
+                      <Button size="sm" onClick={handleSave} disabled={isUpdating} className="h-8 text-xs">
+                        <Save className="h-4 w-4 sm:mr-1" />
+                        <span className="hidden sm:inline">{isUpdating ? "Salvando..." : "Salvar"}</span>
                       </Button>
                     </div>
                   )}
                 </CardTitle>
-                <CardDescription>Visualize e gerencie as informações da sua conta</CardDescription>
+                <CardDescription className="text-sm">Visualize e gerencie as informações da sua conta</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="responsive-card-padding pt-0 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Nome</Label>
+                    <Label htmlFor="name" className="text-sm">Nome</Label>
                     {isEditing ? (
                       <Input
                         id="name"
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
                         placeholder="Digite seu nome"
+                        className="h-10 sm:h-9"
                       />
                     ) : (
-                      <Input id="name" value={user?.name || ""} disabled />
+                      <Input id="name" value={user?.name || ""} disabled className="h-10 sm:h-9" />
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" value={user?.email || ""} disabled />
-                    {isEditing && <p className="text-xs text-muted-foreground">O email não pode ser alterado</p>}
+                    <Label htmlFor="email" className="text-sm">Email</Label>
+                    <Input id="email" value={user?.email || ""} disabled className="h-10 sm:h-9" />
+                    {isEditing && <p className="text-xs text-muted-foreground leading-tight">O email não pode ser alterado</p>}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="company">Empresa</Label>
+                    <Label htmlFor="company" className="text-sm">Empresa</Label>
                     {isEditing ? (
                       <Input
                         id="company"
                         value={editCompany}
                         onChange={(e) => setEditCompany(e.target.value)}
                         placeholder="Digite o nome da empresa"
+                        className="h-10 sm:h-9"
                       />
                     ) : (
-                      <Input id="company" value={user?.company || ""} disabled />
+                      <Input id="company" value={user?.company || ""} disabled className="h-10 sm:h-9" />
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label>Status da Conta</Label>
+                    <Label className="text-sm">Status da Conta</Label>
                     <div>
                       <Badge variant="default" className="bg-green-100 text-green-800">
                         Ativa
@@ -174,14 +176,14 @@ export default function SettingsPage() {
                 <div className="pt-4 border-t">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium">Senha</p>
-                      <p className="text-sm text-muted-foreground">Altere sua senha de acesso</p>
+                      <p className="font-medium text-sm sm:text-base">Senha</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">Altere sua senha de acesso</p>
                     </div>
                     <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
                       <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <Key className="h-4 w-4 mr-2" />
-                          Alterar Senha
+                        <Button variant="outline" size="sm" className="h-8 text-xs">
+                          <Key className="h-4 w-4 sm:mr-2" />
+                          <span className="hidden sm:inline">Alterar Senha</span>
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
@@ -189,40 +191,43 @@ export default function SettingsPage() {
                           <DialogTitle>Alterar Senha</DialogTitle>
                           <DialogDescription>Digite sua senha atual e a nova senha para alterar.</DialogDescription>
                         </DialogHeader>
-                        <form onSubmit={handleChangePassword} className="space-y-4">
+                        <form onSubmit={handleChangePassword} className="space-y-4 sm:space-y-5">
                           <div className="space-y-2">
-                            <Label htmlFor="currentPassword">Senha Atual</Label>
+                            <Label htmlFor="currentPassword" className="text-sm">Senha Atual</Label>
                             <Input
                               id="currentPassword"
                               type="password"
                               value={currentPassword}
                               onChange={(e) => setCurrentPassword(e.target.value)}
+                              className="h-10 sm:h-9"
                               required
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="newPassword">Nova Senha</Label>
+                            <Label htmlFor="newPassword" className="text-sm">Nova Senha</Label>
                             <Input
                               id="newPassword"
                               type="password"
                               value={newPassword}
                               onChange={(e) => setNewPassword(e.target.value)}
+                              className="h-10 sm:h-9"
                               minLength={6}
                               required
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
+                            <Label htmlFor="confirmPassword" className="text-sm">Confirmar Nova Senha</Label>
                             <Input
                               id="confirmPassword"
                               type="password"
                               value={confirmPassword}
                               onChange={(e) => setConfirmPassword(e.target.value)}
+                              className="h-10 sm:h-9"
                               minLength={6}
                               required
                             />
                           </div>
-                          <Button type="submit" className="w-full" disabled={isChangingPassword}>
+                          <Button type="submit" className="w-full h-10 sm:h-9" disabled={isChangingPassword}>
                             {isChangingPassword ? "Alterando..." : "Alterar Senha"}
                           </Button>
                         </form>
@@ -235,59 +240,59 @@ export default function SettingsPage() {
 
             {/* Suporte */}
             <Card>
-              <CardHeader>
+              <CardHeader className="responsive-card-padding">
                 <CardTitle className="flex items-center gap-2">
                   <HelpCircle className="h-5 w-5" />
-                  Suporte
+                  <span className="text-base sm:text-lg">Suporte</span>
                 </CardTitle>
-                <CardDescription>Entre em contato conosco para obter ajuda e suporte</CardDescription>
+                <CardDescription className="text-sm">Entre em contato conosco para obter ajuda e suporte</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4">
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
+              <CardContent className="responsive-card-padding pt-0 space-y-4">
+                <div className="grid gap-3 sm:gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg gap-3 sm:gap-0">
                     <div className="flex items-center gap-3">
                       <Mail className="h-5 w-5 text-blue-600" />
                       <div>
-                        <p className="font-medium">Email</p>
-                        <p className="text-sm text-muted-foreground">visionxma@gmail.com</p>
+                        <p className="font-medium text-sm sm:text-base">Email</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">visionxma@gmail.com</p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" asChild className="h-8 text-xs w-full sm:w-auto">
                       <a href="mailto:visionxma@gmail.com">
                         Enviar Email
-                        <ExternalLink className="h-4 w-4 ml-2" />
+                        <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 ml-2" />
                       </a>
                     </Button>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg gap-3 sm:gap-0">
                     <div className="flex items-center gap-3">
                       <Globe className="h-5 w-5 text-green-600" />
                       <div>
-                        <p className="font-medium">Website</p>
-                        <p className="text-sm text-muted-foreground">visionxma.com</p>
+                        <p className="font-medium text-sm sm:text-base">Website</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">visionxma.com</p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" asChild className="h-8 text-xs w-full sm:w-auto">
                       <a href="https://visionxma.com" target="_blank" rel="noopener noreferrer">
                         Visitar Site
-                        <ExternalLink className="h-4 w-4 ml-2" />
+                        <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 ml-2" />
                       </a>
                     </Button>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg gap-3 sm:gap-0">
                     <div className="flex items-center gap-3">
                       <Phone className="h-5 w-5 text-green-600" />
                       <div>
-                        <p className="font-medium">WhatsApp</p>
-                        <p className="text-sm text-muted-foreground">+55 99 8468-0391</p>
+                        <p className="font-medium text-sm sm:text-base">WhatsApp</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">+55 99 8468-0391</p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" asChild className="h-8 text-xs w-full sm:w-auto">
                       <a href="https://wa.me/5599984680391" target="_blank" rel="noopener noreferrer">
                         Abrir WhatsApp
-                        <ExternalLink className="h-4 w-4 ml-2" />
+                        <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 ml-2" />
                       </a>
                     </Button>
                   </div>
@@ -297,62 +302,62 @@ export default function SettingsPage() {
 
             {/* Termos de Uso e Políticas */}
             <Card>
-              <CardHeader>
+              <CardHeader className="responsive-card-padding">
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  Termos e Políticas
+                  <span className="text-base sm:text-lg">Termos e Políticas</span>
                 </CardTitle>
-                <CardDescription>Informações legais e políticas do sistema</CardDescription>
+                <CardDescription className="text-sm">Informações legais e políticas do sistema</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
+              <CardContent className="responsive-card-padding pt-0 space-y-4">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg gap-3 sm:gap-0">
                     <div>
-                      <p className="font-medium">Termos de Uso</p>
-                      <p className="text-sm text-muted-foreground">Condições de uso do sistema de Controle de frotas</p>
+                      <p className="font-medium text-sm sm:text-base">Termos de Uso</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">Condições de uso do sistema de Controle de frotas</p>
                     </div>
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" asChild className="h-8 text-xs w-full sm:w-auto">
                       <a
                         href="https://drive.google.com/file/d/1YUlgWRwq0x32AvsL8uBvIEsccboNfcVe/view?usp=sharing"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         Visualizar
-                        <ExternalLink className="h-4 w-4 ml-2" />
+                        <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 ml-2" />
                       </a>
                     </Button>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg gap-3 sm:gap-0">
                     <div>
-                      <p className="font-medium">Política de Privacidade</p>
-                      <p className="text-sm text-muted-foreground">Como tratamos e protegemos seus dados</p>
+                      <p className="font-medium text-sm sm:text-base">Política de Privacidade</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">Como tratamos e protegemos seus dados</p>
                     </div>
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" asChild className="h-8 text-xs w-full sm:w-auto">
                       <a
                         href="https://drive.google.com/file/d/19lg6tVrXG1wiBC0-fyPoINJzkqTuQjdA/view?usp=sharing"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         Visualizar
-                        <ExternalLink className="h-4 w-4 ml-2" />
+                        <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 ml-2" />
                       </a>
                     </Button>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg gap-3 sm:gap-0">
                     <div>
-                      <p className="font-medium">Política de Cookies</p>
-                      <p className="text-sm text-muted-foreground">Informações sobre o uso de cookies</p>
+                      <p className="font-medium text-sm sm:text-base">Política de Cookies</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">Informações sobre o uso de cookies</p>
                     </div>
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" asChild className="h-8 text-xs w-full sm:w-auto">
                       <a
                         href="https://drive.google.com/file/d/11yApmqkKxjudVyEfm4H68M4m-S0J55yF/view?usp=sharing"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         Visualizar
-                        <ExternalLink className="h-4 w-4 ml-2" />
+                        <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 ml-2" />
                       </a>
                     </Button>
                   </div>
@@ -362,30 +367,30 @@ export default function SettingsPage() {
 
             {/* Informações do Sistema */}
             <Card>
-              <CardHeader>
+              <CardHeader className="responsive-card-padding">
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="h-5 w-5" />
-                  Informações do Sistema
+                  <span className="text-base sm:text-lg">Informações do Sistema</span>
                 </CardTitle>
-                <CardDescription>Detalhes técnicos e versão do sistema</CardDescription>
+                <CardDescription className="text-sm">Detalhes técnicos e versão do sistema</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="responsive-card-padding pt-0 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Versão do Sistema</Label>
-                    <p className="text-sm font-mono bg-muted p-2 rounded">v1.0.0</p>
+                    <Label className="text-sm">Versão do Sistema</Label>
+                    <p className="text-xs sm:text-sm font-mono bg-muted p-2 rounded">v1.0.0</p>
                   </div>
                   <div className="space-y-2">
-                    <Label>Última Atualização</Label>
-                    <p className="text-sm font-mono bg-muted p-2 rounded">{new Date().toLocaleDateString("pt-BR")}</p>
+                    <Label className="text-sm">Última Atualização</Label>
+                    <p className="text-xs sm:text-sm font-mono bg-muted p-2 rounded">{new Date().toLocaleDateString("pt-BR")}</p>
                   </div>
                   <div className="space-y-2">
-                    <Label>Desenvolvido por</Label>
-                    <p className="text-sm bg-muted p-2 rounded">VisionX Inova Simples (I.S) </p>
+                    <Label className="text-sm">Desenvolvido por</Label>
+                    <p className="text-xs sm:text-sm bg-muted p-2 rounded">VisionX Inova Simples (I.S) </p>
                   </div>
                   <div className="space-y-2">
-                    <Label>Licença</Label>
-                    <p className="text-sm bg-muted p-2 rounded">Proprietária</p>
+                    <Label className="text-sm">Licença</Label>
+                    <p className="text-xs sm:text-sm bg-muted p-2 rounded">Proprietária</p>
                   </div>
                 </div>
               </CardContent>
