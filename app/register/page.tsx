@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
@@ -10,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Truck, ExternalLink } from "lucide-react"
+import { Truck, ExternalLink, Loader2 } from "lucide-react"
 import Link from "next/link"
 
 export default function RegisterPage() {
@@ -49,68 +48,71 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-3 sm:p-4">
-      <Card className="w-full max-w-sm sm:max-w-md">
-        <CardHeader className="text-center responsive-card-padding">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 bg-primary rounded-full">
-              <Truck className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-600/80 via-red-700/70 to-black/60 p-4">
+      <Card className="w-full max-w-md shadow-xl rounded-2xl border border-border/40 backdrop-blur-sm bg-background/95 animate-in fade-in-50 slide-in-from-bottom-5">
+        <CardHeader className="text-center space-y-3">
+          <div className="flex justify-center">
+            <div className="p-3 bg-primary/10 rounded-full">
+              <Truck className="h-8 w-8 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-xl sm:text-2xl font-bold">Criar Conta</CardTitle>
-          <CardDescription className="text-sm">Cadastre-se para começar a gerenciar sua frota</CardDescription>
+          <CardTitle className="text-2xl font-bold">Criar Conta</CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
+            Cadastre-se para começar a gerenciar sua frota
+          </CardDescription>
         </CardHeader>
-        <CardContent className="responsive-card-padding pt-0">
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm">Nome Completo</Label>
+
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="name" className="text-sm font-medium">Nome Completo</Label>
               <Input
                 id="name"
                 type="text"
                 placeholder="Seu nome completo"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="h-11 sm:h-10"
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="company" className="text-sm">Empresa</Label>
+
+            <div>
+              <Label htmlFor="company" className="text-sm font-medium">Empresa</Label>
               <Input
                 id="company"
                 type="text"
                 placeholder="Nome da sua empresa"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
-                className="h-11 sm:h-10"
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm">Email</Label>
+
+            <div>
+              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-11 sm:h-10"
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm">Senha</Label>
+
+            <div>
+              <Label htmlFor="password" className="text-sm font-medium">Senha</Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="Crie uma senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-11 sm:h-10"
                 required
                 minLength={6}
               />
             </div>
+
             <div className="space-y-3 pt-2">
               <div className="flex items-start space-x-2">
                 <Checkbox
@@ -118,23 +120,21 @@ export default function RegisterPage() {
                   checked={acceptedTerms}
                   onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
                 />
-                <div className="grid gap-1.5 leading-none">
-                  <label
-                    htmlFor="terms"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                <label
+                  htmlFor="terms"
+                  className="text-sm leading-none"
+                >
+                  Aceito os{" "}
+                  <a
+                    href="https://drive.google.com/file/d/1YUlgWRwq0x32AvsL8uBvIEsccboNfcVe/view?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline inline-flex items-center gap-1"
                   >
-                    Aceito os{" "}
-                    <a
-                      href="https://drive.google.com/file/d/1YUlgWRwq0x32AvsL8uBvIEsccboNfcVe/view?usp=sharing"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline inline-flex items-center gap-1"
-                    >
-                      Termos de Uso
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </label>
-                </div>
+                    Termos de Uso
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </label>
               </div>
 
               <div className="flex items-start space-x-2">
@@ -143,38 +143,47 @@ export default function RegisterPage() {
                   checked={acceptedPrivacy}
                   onCheckedChange={(checked) => setAcceptedPrivacy(checked as boolean)}
                 />
-                <div className="grid gap-1.5 leading-none">
-                  <label
-                    htmlFor="privacy"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                <label
+                  htmlFor="privacy"
+                  className="text-sm leading-none"
+                >
+                  Aceito a{" "}
+                  <a
+                    href="https://drive.google.com/file/d/19lg6tVrXG1wiBC0-fyPoINJzkqTuQjdA/view?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline inline-flex items-center gap-1"
                   >
-                    Aceito a{" "}
-                    <a
-                      href="https://drive.google.com/file/d/19lg6tVrXG1wiBC0-fyPoINJzkqTuQjdA/view?usp=sharing"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline inline-flex items-center gap-1"
-                    >
-                      Política de Privacidade
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </label>
-                </div>
+                    Política de Privacidade
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </label>
               </div>
             </div>
 
-            {error && <div className="text-destructive text-sm text-center leading-tight">{error}</div>}
-            <Button type="submit" className="w-full h-11 sm:h-10" disabled={isLoading}>
-              {isLoading ? "Criando conta..." : "Criar Conta"}
+            {error && (
+              <p className="text-destructive text-sm text-center bg-destructive/10 p-2 rounded-md border border-destructive/20">
+                {error}
+              </p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Criando conta...
+                </>
+              ) : (
+                "Criar Conta"
+              )}
             </Button>
           </form>
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground leading-tight">
-              Já tem uma conta?{" "}
-              <Link href="/login" className="text-primary hover:underline">
-                Faça login
-              </Link>
-            </p>
+
+          <div className="mt-6 text-center text-sm">
+            Já tem uma conta?{" "}
+            <Link href="/login" className="text-primary hover:underline">
+              Faça login
+            </Link>
           </div>
         </CardContent>
       </Card>
