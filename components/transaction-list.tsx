@@ -63,7 +63,7 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
     return matchesSearch && matchesType && matchesCategory
   })
 
-  const categories = [...new Set(transactions.map((t) => t.category))].sort()
+  const categories = [...new Set(transactions.map((t) => t.category))].filter((category) => category !== '').sort()
 
   if (isLoading) {
     return (
