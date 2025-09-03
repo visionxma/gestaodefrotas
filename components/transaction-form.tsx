@@ -255,23 +255,6 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="truckId">Caminhão (opcional)</Label>
-              <Select value={formData.truckId || "none"} onValueChange={(value) => handleChange("truckId", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um caminhão" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Nenhum</SelectItem>
-                  {trucks.map((truck) => (
-                    <SelectItem key={truck.id} value={truck.id}>
-                      {truck.plate} - {truck.brand} {truck.model}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="driverId">Motorista (opcional)</Label>
               <Select value={formData.driverId || "none"} onValueChange={(value) => handleChange("driverId", value)}>
                 <SelectTrigger>
