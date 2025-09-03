@@ -13,7 +13,6 @@ import { useTrucks } from "@/hooks/use-trucks"
 import { useDrivers } from "@/hooks/use-drivers"
 import { useTrips } from "@/hooks/use-trips" // Importado hook de viagens
 import { useRentals } from "@/hooks/use-rentals" // Importado hook de locações
-import { useMachinery } from "@/hooks/use-machinery" // Importado hook de máquinas
 
 interface TransactionFormProps {
   transaction?: Transaction
@@ -41,7 +40,6 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
   const { drivers } = useDrivers()
   const { trips } = useTrips() // Adicionado hook de viagens
   const { rentals } = useRentals() // Adicionado hook de locações
-  const { machinery } = useMachinery() // Adicionado hook de máquinas
 
   const [formData, setFormData] = useState({
     type: transaction?.type || ("receita" as const),
@@ -53,8 +51,6 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
     driverId: transaction?.driverId || undefined,
     tripId: transaction?.tripId || undefined, // Adicionado campo tripId
     rentalId: transaction?.rentalId || undefined, // Adicionado campo rentalId
-    vehicleId: transaction?.vehicleId || undefined, // Adicionado campo vehicleId
-    vehicleType: transaction?.vehicleType || undefined, // Adicionado campo vehicleType
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -65,8 +61,6 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
       driverId: formData.driverId || undefined,
       tripId: formData.tripId || undefined, // Incluído tripId no submit
       rentalId: formData.rentalId || undefined, // Incluído rentalId no submit
-      vehicleId: formData.vehicleId || undefined, // Incluído vehicleId no submit
-      vehicleType: formData.vehicleType || undefined, // Incluído vehicleType no submit
     })
   }
 
@@ -79,33 +73,6 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
 
   const completedTrips = trips.filter((trip) => trip.status === "completed")
   const completedRentals = rentals.filter((rental) => rental.status === "completed")
-
-  // Criar lista combinada de veículos (caminhões + máquinas)
-  const vehicles = [
-    ...trucks.map((truck) => ({
-      id: truck.id,
-      label: `${truck.plate} - ${truck.brand} ${truck.model}`,
-      type: "truck" as const,
-    })),
-    ...machinery.map((machine) => ({
-      id: machine.id,
-      label: `${machine.serialNumber} - ${machine.brand} ${machine.model}`,
-      type: "machinery" as const,
-    })),
-  ]
-
-  const handleVehicleChange = (value: string) => {
-    if (value === "none") {
-      handleChange("vehicleId", undefined)
-      handleChange("vehicleType", undefined)
-    } else {
-      const vehicle = vehicles.find((v) => v.id === value)
-      if (vehicle) {
-        handleChange("vehicleId", value)
-        handleChange("vehicleType", vehicle.type)
-      }
-    }
-  }
 
   return (
     <Card>
@@ -238,16 +205,16 @@ export function TransactionForm({ transaction, onSubmit, onCancel, isLoading }: 
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="vehicleId">Veículo (opcional)</Label>
-              <Select value={formData.vehicleId || "none"} onValueChange={handleVehicleChange}>
+              <Label htmlFor="truckId">Caminhão (opcional)</Label>
+              <Select value={formData.truckId || "none"} onValueChange={(value) => handleChange("truckId", value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione um veículo" />
+                  <SelectValue placeholder="Selecione um caminhão" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">Nenhum</SelectItem>
-                  {vehicles.map((vehicle) => (
-                    <SelectItem key={vehicle.id} value={vehicle.id}>
-                      {vehicle.label} ({vehicle.type === "truck" ? "Caminhão" : "Máquina"})
+                  {trucks.map((truck) => (
+                    <SelectItem key={truck.id} value={truck.id}>
+                      {truck.plate} - {truck.brand} {truck.model}
                     </SelectItem>
                   ))}
                 </SelectContent>

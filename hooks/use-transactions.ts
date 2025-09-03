@@ -16,8 +16,6 @@ export interface Transaction {
   driverId?: string
   tripId?: string // Adicionado campo para associar transação a uma viagem
   rentalId?: string // Adicionado campo para associar transação a uma locação
-  vehicleId?: string // Adicionado campo para associar transação a um veículo (caminhão ou máquina)
-  vehicleType?: "truck" | "machinery" // Tipo do veículo
   userId: string
   createdAt?: Date
   updatedAt?: Date

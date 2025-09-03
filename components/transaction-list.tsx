@@ -10,7 +10,6 @@ import { Trash2, TrendingUp, TrendingDown, Search, Edit } from "lucide-react"
 import type { Transaction } from "@/hooks/use-transactions"
 import { useTrucks } from "@/hooks/use-trucks"
 import { useDrivers } from "@/hooks/use-drivers"
-import { useMachinery } from "@/hooks/use-machinery"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,7 +31,6 @@ interface TransactionListProps {
 export function TransactionList({ transactions, onEdit, onDelete, isLoading }: TransactionListProps) {
   const { trucks } = useTrucks()
   const { drivers } = useDrivers()
-  const { machinery } = useMachinery()
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterType, setFilterType] = useState<"all" | "receita" | "despesa">("all")
@@ -57,19 +55,6 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
     return driver?.name || null
   }
 
-  const getVehicleName = (vehicleId?: string, vehicleType?: string) => {
-    if (!vehicleId || !vehicleType) return null
-    
-    if (vehicleType === "truck") {
-      const truck = trucks.find((t) => t.id === vehicleId)
-      return truck ? `${truck.plate} (Caminhão)` : null
-    } else if (vehicleType === "machinery") {
-      const machine = machinery.find((m) => m.id === vehicleId)
-      return machine ? `${machine.serialNumber} (Máquina)` : null
-    }
-    
-    return null
-  }
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesSearch = transaction.description.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesType = filterType === "all" || transaction.type === filterType
@@ -181,11 +166,6 @@ export function TransactionList({ transactions, onEdit, onDelete, isLoading }: T
                         {getDriverName(transaction.driverId) && (
                           <Badge variant="secondary" className="hidden md:inline-flex text-xs">
                             {getDriverName(transaction.driverId)}
-                          </Badge>
-                        )}
-                        {getVehicleName(transaction.vehicleId, transaction.vehicleType) && (
-                          <Badge variant="secondary" className="hidden md:inline-flex text-xs">
-                            {getVehicleName(transaction.vehicleId, transaction.vehicleType)}
                           </Badge>
                         )}
                       </div>
