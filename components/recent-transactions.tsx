@@ -6,11 +6,13 @@ import { TrendingUp, TrendingDown } from "lucide-react"
 import { useTransactions } from "@/hooks/use-transactions"
 import { useTrucks } from "@/hooks/use-trucks"
 import { useDrivers } from "@/hooks/use-drivers"
+import { useMachinery } from "@/hooks/use-machinery"
 
 export function RecentTransactions() {
   const { transactions } = useTransactions()
   const { trucks } = useTrucks()
   const { drivers } = useDrivers()
+  const { machinery } = useMachinery()
 
   const recentTransactions = transactions.slice(0, 5)
 
@@ -26,6 +28,19 @@ export function RecentTransactions() {
     return driver?.name || null
   }
 
+  const getVehicleName = (vehicleId?: string, vehicleType?: string) => {
+    if (!vehicleId || !vehicleType) return null
+    
+    if (vehicleType === "truck") {
+      const truck = trucks.find((t) => t.id === vehicleId)
+      return truck ? truck.plate : null
+    } else if (vehicleType === "machinery") {
+      const machine = machinery.find((m) => m.id === vehicleId)
+      return machine ? machine.serialNumber : null
+    }
+    
+    return null
+  }
   return (
     <Card>
       <CardHeader className="p-3 sm:p-4 lg:p-6">
@@ -56,7 +71,10 @@ export function RecentTransactions() {
                   <div>
                     <p className="font-medium text-sm leading-tight">{transaction.description}</p>
                     <p className="text-xs text-muted-foreground leading-tight">
-                      {getTruckName(transaction.truckId) || getDriverName(transaction.driverId) || "Geral"} •{" "}
+                      {getVehicleName(transaction.vehicleId, transaction.vehicleType) || 
+                       getTruckName(transaction.truckId) || 
+                       getDriverName(transaction.driverId) || 
+                       "Geral"} •{" "}
                       {new Date(transaction.date).toLocaleDateString("pt-BR")}
                     </p>
                   </div>
