@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
@@ -17,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Truck, Eye, EyeOff, Loader2 } from "lucide-react"
+import { Eye, EyeOff, Loader2, LogIn } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
 
@@ -73,85 +72,65 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-3 sm:p-4">
-      {/* Background Image with Gradient Overlay */}
-      <div className="absolute inset-0 z-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: 'url(https://infleet.com.br/wp-content/uploads/2025/05/tudo-o-que-voce-precisa-saber-sobre-gestao-de-frota-de-caminhoes.webp)'
-          }}
-        />
-        {/* Red gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-red-600/80 via-red-700/70 to-black/60" />
-        {/* Additional overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/20" />
-      </div>
-
-      {/* Content */}
-      <Card className="w-full max-w-sm sm:max-w-md">
-        <CardHeader className="text-center responsive-card-padding">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 bg-primary/10 rounded-full backdrop-blur-sm">
-              <img src="https://i.imgur.com/e9kut4B.png" alt="ICONFROTAS Logo" className="h-10 w-10 sm:h-12 sm:w-12" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-600/80 via-red-700/70 to-black/60 p-4">
+      <Card className="w-full max-w-md shadow-xl rounded-2xl border border-border/40 backdrop-blur-sm bg-background/95 animate-in fade-in-50 slide-in-from-bottom-5">
+        <CardHeader className="text-center space-y-3">
+          <div className="flex justify-center">
+            <div className="p-3 bg-primary/10 rounded-full">
+              <LogIn className="h-8 w-8 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-xl sm:text-2xl font-bold">Controle de Frotas</CardTitle>
-          <CardDescription className="text-sm">Entre na sua conta para gerenciar sua frota</CardDescription>
+          <CardTitle className="text-2xl font-bold">Acesse sua conta</CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
+            Controle sua frota de forma simples e segura
+          </CardDescription>
         </CardHeader>
-        <CardContent className="responsive-card-padding pt-0 relative z-10">
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm">Email</Label>
+
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="seu@email.com"
+                placeholder="exemplo@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-11 sm:h-10 transition-all duration-200 focus:scale-[1.02] focus:shadow-lg"
                 autoComplete="email"
                 required
               />
             </div>
-            <div className="space-y-2 relative">
-              <Label htmlFor="password" className="text-sm">Senha</Label>
+
+            <div>
+              <Label htmlFor="password" className="text-sm font-medium">Senha</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Sua senha"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-11 sm:h-10 pr-12 transition-all duration-200 focus:scale-[1.02] focus:shadow-lg"
                   autoComplete="current-password"
                   required
+                  className="pr-10"
                 />
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-11 sm:h-10 px-3 hover:bg-transparent"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </Button>
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
               </div>
             </div>
+
             {error && (
-              <div className="text-destructive text-sm text-center leading-tight bg-destructive/10 p-3 rounded-md border border-destructive/20 animate-in slide-in-from-top-2">
+              <p className="text-destructive text-sm text-center bg-destructive/10 p-2 rounded-md border border-destructive/20">
                 {error}
-              </div>
+              </p>
             )}
-            <Button 
-              type="submit" 
-              className="w-full h-11 sm:h-10 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg" 
-              disabled={isPending || !email || !password}
-            >
+
+            <Button type="submit" className="w-full" disabled={isPending || !email || !password}>
               {isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -166,41 +145,32 @@ export default function LoginPage() {
           <div className="mt-4 text-center">
             <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="link" className="text-sm h-auto p-2 hover:scale-105 transition-transform duration-200">
-                  Esqueci minha senha
-                </Button>
+                <Button variant="link" className="text-sm">Esqueci minha senha</Button>
               </DialogTrigger>
-              <DialogContent className="backdrop-blur-sm">
+              <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Recuperar Senha</DialogTitle>
-                  <DialogDescription>Digite seu email para receber um link de recuperação de senha.</DialogDescription>
+                  <DialogDescription>
+                    Digite seu email para receber um link de recuperação de senha.
+                  </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleResetPassword} className="space-y-4 sm:space-y-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="resetEmail" className="text-sm">Email</Label>
-                    <Input
-                      id="resetEmail"
-                      type="email"
-                      placeholder="seu@email.com"
-                      value={resetEmail}
-                      onChange={(e) => setResetEmail(e.target.value)}
-                      className="h-11 sm:h-10 transition-all duration-200 focus:scale-[1.02]"
-                      autoComplete="email"
-                      required
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full h-11 sm:h-10 transition-all duration-200 hover:scale-[1.02]" 
-                    disabled={isResetLoading || !resetEmail}
-                  >
+                <form onSubmit={handleResetPassword} className="space-y-4">
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    placeholder="exemplo@email.com"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                  />
+                  <Button type="submit" className="w-full" disabled={isResetLoading || !resetEmail}>
                     {isResetLoading ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         Enviando...
                       </>
                     ) : (
-                      "Enviar Link de Recuperação"
+                      "Enviar link"
                     )}
                   </Button>
                 </form>
@@ -208,13 +178,11 @@ export default function LoginPage() {
             </Dialog>
           </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground leading-tight">
-              Não tem uma conta?{" "}
-              <Link href="/register" className="text-primary hover:underline hover:scale-105 transition-transform duration-200 inline-block">
-                Cadastre-se
-              </Link>
-            </p>
+          <div className="mt-6 text-center text-sm">
+            Não tem uma conta?{" "}
+            <Link href="/register" className="text-primary hover:underline">
+              Cadastre-se
+            </Link>
           </div>
         </CardContent>
       </Card>
