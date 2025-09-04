@@ -72,10 +72,12 @@ export default function LoginPage() {
   }
 
 return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center"
-      style={{ backgroundImage: "url('https://www.sofit4.com.br/wp-content/uploads/direcao-defensiva-para-caminhoes-sofit.jpg')" }}
-    >
+<div
+  className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-600/80 via-red-700/70 to-black/60 bg-cover bg-center bg-blend-overlay"
+  style={{
+    backgroundImage: "url('https://www.sofit4.com.br/wp-content/uploads/direcao-defensiva-para-caminhoes-sofit.jpg')",
+  }}
+>
       <div className="absolute inset-0 bg-black/60" /> {/* overlay escuro para contraste */}
 
       <Card className="relative z-10 w-full max-w-md shadow-xl rounded-2xl border border-border/40 backdrop-blur-sm bg-background/95 animate-in fade-in-50 slide-in-from-bottom-5">
