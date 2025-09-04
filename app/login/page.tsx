@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useTransition } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
@@ -24,31 +24,33 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const [isPending, startTransition] = useTransition()
   const [error, setError] = useState("")
 
   const [resetEmail, setResetEmail] = useState("")
   const [isResetLoading, setIsResetLoading] = useState(false)
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
 
-  const { login, resetPassword } = useAuth()
+  const { login, resetPassword, isAuthenticating } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
 
-    startTransition(async () => {
-      const success = await login(email, password)
+    if (isAuthenticating) return
+    
+    console.log("[v0] LoginPage - iniciando tentativa de login")
+    const success = await login(email, password)
 
-      if (success) {
-        toast.success("Login realizado com sucesso!")
-        router.push("/dashboard")
-      } else {
-        setError("Email ou senha incorretos")
-        toast.error("Credenciais inválidas")
-      }
-    })
+    if (success) {
+      console.log("[v0] LoginPage - login bem-sucedido, redirecionando")
+      toast.success("Login realizado com sucesso!")
+      router.push("/dashboard")
+    } else {
+      console.log("[v0] LoginPage - falha no login")
+      setError("Email ou senha incorretos")
+      toast.error("Credenciais inválidas")
+    }
   }
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -103,6 +105,7 @@ return (
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
+                disabled={isAuthenticating}
                 required
               />
             </div>
@@ -117,6 +120,7 @@ return (
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
+                  disabled={isAuthenticating}
                   required
                   className="pr-10"
                 />
@@ -124,6 +128,7 @@ return (
                   type="button"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={isAuthenticating}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -136,8 +141,8 @@ return (
               </p>
             )}
 
-            <Button type="submit" className="w-full" disabled={isPending || !email || !password}>
-              {isPending ? (
+            <Button type="submit" className="w-full" disabled={isAuthenticating || !email || !password}>
+              {isAuthenticating ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Entrando...
@@ -151,7 +156,7 @@ return (
           <div className="mt-4 text-center">
             <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="link" className="text-sm">Esqueci minha senha</Button>
+                <Button variant="link" className="text-sm" disabled={isAuthenticating}>Esqueci minha senha</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -186,7 +191,7 @@ return (
 
           <div className="mt-6 text-center text-sm">
             Não tem uma conta?{" "}
-            <Link href="/register" className="text-primary hover:underline">
+            <Link href="/register" className={`text-primary hover:underline ${isAuthenticating ? 'pointer-events-none opacity-50' : ''}`}>
               Cadastre-se
             </Link>
           </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState, useEffect, useCallback } from "react"
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -32,6 +32,7 @@ interface AuthContextType {
   resetPassword: (email: string) => Promise<boolean>
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>
   isLoading: boolean
+  isAuthenticating: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -39,7 +40,39 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticating, setIsAuthenticating] = useState(false)
+  const [authInitialized, setAuthInitialized] = useState(false)
 
+  const loadUserData = useCallback(async (firebaseUser: FirebaseUser) => {
+    try {
+      console.log("[v0] AuthProvider - buscando dados do usuário no Firestore")
+      const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
+      console.log("[v0] AuthProvider - userDoc exists:", userDoc.exists())
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data()
+        console.log("[v0] AuthProvider - userData:", userData)
+
+        const user = {
+          id: firebaseUser.uid,
+          name: userData.name,
+          email: firebaseUser.email!,
+          company: userData.company,
+        }
+        console.log("[v0] AuthProvider - setting user:", user)
+        setUser(user)
+        return true
+      } else {
+        console.log("[v0] AuthProvider - documento do usuário não encontrado")
+        setUser(null)
+        return false
+      }
+    } catch (error) {
+      console.error("[v0] AuthProvider - erro ao buscar dados do usuário:", error)
+      setUser(null)
+      return false
+    }
+  }, [])
   useEffect(() => {
     console.log("[v0] AuthProvider - iniciando onAuthStateChanged")
 
@@ -48,55 +81,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("[v0] AuthProvider - firebaseUser.uid:", firebaseUser?.uid)
 
       if (firebaseUser) {
-        try {
-          // Buscar dados adicionais do usuário no Firestore
-          console.log("[v0] AuthProvider - buscando dados do usuário no Firestore")
-          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
-          console.log("[v0] AuthProvider - userDoc exists:", userDoc.exists())
-
-          if (userDoc.exists()) {
-            const userData = userDoc.data()
-            console.log("[v0] AuthProvider - userData:", userData)
-
-            const user = {
-              id: firebaseUser.uid,
-              name: userData.name,
-              email: firebaseUser.email!,
-              company: userData.company,
-            }
-            console.log("[v0] AuthProvider - setting user:", user)
-            setUser(user)
-          } else {
-            console.log("[v0] AuthProvider - documento do usuário não encontrado")
-            setUser(null)
-          }
-        } catch (error) {
-          console.error("[v0] AuthProvider - erro ao buscar dados do usuário:", error)
-          setUser(null)
-        }
+        await loadUserData(firebaseUser)
       } else {
         console.log("[v0] AuthProvider - usuário não autenticado")
         setUser(null)
+      }
+      
+      if (!authInitialized) {
+        setAuthInitialized(true)
       }
       setIsLoading(false)
       console.log("[v0] AuthProvider - isLoading set to false")
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [loadUserData, authInitialized])
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+    if (isAuthenticating) return false
+    
+    setIsAuthenticating(true)
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      console.log("[v0] AuthProvider - iniciando login para:", email)
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      console.log("[v0] AuthProvider - login bem-sucedido")
+      
+      // Carregar dados do usuário imediatamente após o login
+      const success = await loadUserData(userCredential.user)
+      if (!success) {
+        console.error("[v0] AuthProvider - falha ao carregar dados do usuário após login")
+        await signOut(auth)
+        return false
+      }
+      
       return true
     } catch (error) {
       console.error("Erro no login:", error)
       return false
+    } finally {
+      setIsAuthenticating(false)
     }
-  }
+  }, [isAuthenticating, loadUserData])
 
-  const register = async (name: string, email: string, password: string, company: string): Promise<boolean> => {
+  const register = useCallback(async (name: string, email: string, password: string, company: string): Promise<boolean> => {
+    if (isAuthenticating) return false
+    
+    setIsAuthenticating(true)
     try {
+      console.log("[v0] AuthProvider - iniciando registro para:", email)
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const firebaseUser = userCredential.user
 
@@ -107,20 +139,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         createdAt: new Date().toISOString(),
       })
 
+      // Carregar dados do usuário imediatamente após o registro
+      await loadUserData(firebaseUser)
+      console.log("[v0] AuthProvider - registro bem-sucedido")
+      
       return true
     } catch (error) {
       console.error("Erro no registro:", error)
       return false
+    } finally {
+      setIsAuthenticating(false)
     }
-  }
+  }, [isAuthenticating, loadUserData])
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
+      console.log("[v0] AuthProvider - fazendo logout")
+      setUser(null) // Limpar estado imediatamente
       await signOut(auth)
     } catch (error) {
       console.error("Erro no logout:", error)
     }
-  }
+  }, [])
 
   const updateUserData = async (name: string, company: string): Promise<boolean> => {
     if (!user) return false
@@ -185,6 +225,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         resetPassword,
         changePassword,
         isLoading,
+        isAuthenticating,
       }}
     >
       {children}

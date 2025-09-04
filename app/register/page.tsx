@@ -17,12 +17,11 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [company, setCompany] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false)
 
-  const { register } = useAuth()
+  const { register, isAuthenticating } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,17 +33,20 @@ export default function RegisterPage() {
       return
     }
 
-    setIsLoading(true)
+    if (isAuthenticating) return
 
+    console.log("[v0] RegisterPage - iniciando registro")
     const success = await register(name, email, password, company)
 
     if (success) {
+      console.log("[v0] RegisterPage - registro bem-sucedido, redirecionando")
+      toast.success("Conta criada com sucesso!")
       router.push("/dashboard")
     } else {
+      console.log("[v0] RegisterPage - falha no registro")
       setError("Email já cadastrado ou erro no registro")
+      toast.error("Erro ao criar conta")
     }
-
-    setIsLoading(false)
   }
 
   return (
@@ -72,6 +74,7 @@ export default function RegisterPage() {
                 placeholder="Seu nome completo"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                disabled={isAuthenticating}
                 required
               />
             </div>
@@ -84,6 +87,7 @@ export default function RegisterPage() {
                 placeholder="Nome da sua empresa"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
+                disabled={isAuthenticating}
                 required
               />
             </div>
@@ -96,6 +100,7 @@ export default function RegisterPage() {
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isAuthenticating}
                 required
               />
             </div>
@@ -108,6 +113,7 @@ export default function RegisterPage() {
                 placeholder="Crie uma senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isAuthenticating}
                 required
                 minLength={6}
               />
@@ -119,6 +125,7 @@ export default function RegisterPage() {
                   id="terms"
                   checked={acceptedTerms}
                   onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                  disabled={isAuthenticating}
                 />
                 <label
                   htmlFor="terms"
@@ -142,6 +149,7 @@ export default function RegisterPage() {
                   id="privacy"
                   checked={acceptedPrivacy}
                   onCheckedChange={(checked) => setAcceptedPrivacy(checked as boolean)}
+                  disabled={isAuthenticating}
                 />
                 <label
                   htmlFor="privacy"
@@ -167,8 +175,8 @@ export default function RegisterPage() {
               </p>
             )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
+            <Button type="submit" className="w-full" disabled={isAuthenticating || !acceptedTerms || !acceptedPrivacy}>
+              {isAuthenticating ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Criando conta...
@@ -181,7 +189,7 @@ export default function RegisterPage() {
 
           <div className="mt-6 text-center text-sm">
             Já tem uma conta?{" "}
-            <Link href="/login" className="text-primary hover:underline">
+            <Link href="/login" className={`text-primary hover:underline ${isAuthenticating ? 'pointer-events-none opacity-50' : ''}`}>
               Faça login
             </Link>
           </div>
