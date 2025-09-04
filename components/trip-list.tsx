@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Truck, User, Trash2, CheckCircle, DollarSign, Weight } from "lucide-react"
+import { MapPin, Truck, User, Trash2, CheckCircle, DollarSign, Weight, Fuel } from "lucide-react"
 import type { Trip } from "@/hooks/use-trips"
 
 interface TripListProps {
@@ -129,7 +129,7 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
               )}
             </div>
 
-            {(trip.weightTons || trip.freightValue || trip.netProfit !== undefined) && (
+            {(trip.weightTons || trip.freightValue || trip.netProfit !== undefined || trip.fuelLiters || trip.fuelConsumption) && (
               <div className="mt-4 pt-4 border-t">
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   {trip.weightTons && (
@@ -170,6 +170,26 @@ export function TripList({ trips, onComplete, onDelete, onViewDetails, isLoading
                           R$ {trip.netProfit.toFixed(2)}
                         </p>
                         <p className="text-xs text-muted-foreground leading-tight">Lucro Líquido</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {trip.fuelLiters && (
+                    <div className="flex items-center gap-2">
+                      <Fuel className="h-4 w-4 text-orange-500" />
+                      <div>
+                        <p className="text-sm font-medium leading-tight">{trip.fuelLiters.toLocaleString()} L</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Combustível</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {trip.fuelConsumption && (
+                    <div className="flex items-center gap-2">
+                      <Fuel className="h-4 w-4 text-red-500" />
+                      <div>
+                        <p className="text-sm font-medium leading-tight">{trip.fuelConsumption.toFixed(3)} L/km</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Consumo Médio</p>
                       </div>
                     </div>
                   )}

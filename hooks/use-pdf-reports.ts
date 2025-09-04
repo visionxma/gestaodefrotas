@@ -244,24 +244,28 @@ export const usePdfReports = () => {
           t.endDate ? new Date(t.endDate).toLocaleDateString("pt-BR") : "-",
           t.status === "in_progress" ? "Em Andamento" : "Finalizada",
           `${t.kmTraveled || 0} km`,
+          t.fuelLiters ? `${t.fuelLiters} L` : "-",
+          t.fuelConsumption ? `${t.fuelConsumption.toFixed(3)} L/km` : "-",
         ])
 
         autoTable(doc, {
           startY: yPos,
-          head: [["Placa", "Motorista", "Origem", "Destino", "Início", "Fim", "Status", "KM"]],
+          head: [["Placa", "Motorista", "Origem", "Destino", "Início", "Fim", "Status", "KM", "Combustível", "Consumo"]],
           body: tripData,
           theme: "grid",
           headStyles: { fillColor: [168, 85, 247] },
           margin: { left: 20, right: 20 },
           columnStyles: {
-            0: { cellWidth: 20 },
-            1: { cellWidth: 25 },
-            2: { cellWidth: 25 },
-            3: { cellWidth: 25 },
-            4: { cellWidth: 20 },
-            5: { cellWidth: 20 },
-            6: { cellWidth: 20 },
-            7: { cellWidth: 15 },
+            0: { cellWidth: 18 },
+            1: { cellWidth: 22 },
+            2: { cellWidth: 22 },
+            3: { cellWidth: 22 },
+            4: { cellWidth: 18 },
+            5: { cellWidth: 18 },
+            6: { cellWidth: 18 },
+            7: { cellWidth: 12 },
+            8: { cellWidth: 15 },
+            9: { cellWidth: 15 },
           },
         })
       }

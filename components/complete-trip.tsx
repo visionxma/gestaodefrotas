@@ -16,6 +16,7 @@ interface CompleteTripProps {
     endKm: number
     endDate: string
     endTime: string
+    fuelLiters: number
   }) => void
   onCancel: () => void
   isLoading: boolean
@@ -45,26 +46,35 @@ export function CompleteTrip({ trip, onSubmit, onCancel, isLoading }: CompleteTr
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formData.endLocation || !formData.endKm) {
+    if (!formData.endLocation || !formData.endKm || !formData.fuelLiters) {
       return
     }
 
     const endKmValue = Number.parseInt(formData.endKm, 10)
+    const fuelLitersValue = Number.parseFloat(formData.fuelLiters)
 
     if (isNaN(endKmValue) || endKmValue <= trip.startKm) {
       alert("A quilometragem final deve ser maior que a inicial")
       return
     }
 
+    if (isNaN(fuelLitersValue) || fuelLitersValue <= 0) {
+      alert("A quantidade de combustível deve ser maior que zero")
+      return
+    }
     onSubmit({
       endLocation: formData.endLocation,
       endKm: endKmValue,
       endDate: formData.endDate,
       endTime: formData.endTime,
+      fuelLiters: fuelLitersValue,
     })
   }
 
   const kmTraveled = formData.endKm ? Number.parseInt(formData.endKm, 10) - trip.startKm : 0
+  const fuelConsumption = formData.fuelLiters && kmTraveled > 0 
+    ? (Number.parseFloat(formData.fuelLiters) / kmTraveled).toFixed(3) 
+    : 0
 
   return (
     <Card>
@@ -149,11 +159,40 @@ export function CompleteTrip({ trip, onSubmit, onCancel, isLoading }: CompleteTr
                 />
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="fuelLiters">Combustível Gasto (Litros)</Label>
+                <Input
+                  id="fuelLiters"
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  value={formData.fuelLiters}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, fuelLiters: e.target.value }))}
+                  placeholder="Ex: 250.5"
+                  required
+                />
+              </div>
               {kmTraveled > 0 && (
                 <div className="space-y-2">
                   <Label>Quilômetros Percorridos</Label>
                   <div className="p-3 bg-primary/10 rounded-lg">
                     <span className="text-lg font-semibold text-primary">{kmTraveled.toLocaleString()} km</span>
+                  </div>
+                </div>
+              )}
+
+              {kmTraveled > 0 && formData.fuelLiters && (
+                <div className="space-y-2">
+                  <Label>Consumo de Combustível</Label>
+                  <div className="p-3 bg-blue-50 rounded-lg space-y-1">
+                    <div className="flex justify-between text-sm">
+                      <span>Combustível gasto:</span>
+                      <span className="font-semibold">{formData.fuelLiters} L</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Média de consumo:</span>
+                      <span className="font-semibold text-blue-600">{fuelConsumption} L/km</span>
+                    </div>
                   </div>
                 </div>
               )}

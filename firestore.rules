@@ -55,7 +55,12 @@ service cloud.firestore {
       
       // Permitir atualizações para o proprietário
       allow update: if request.auth != null && 
-        resource.data.userId == request.auth.uid;
+        resource.data.userId == request.auth.uid &&
+        // Validar campos opcionais quando presentes
+        (!('fuelLiters' in request.resource.data) || 
+         (request.resource.data.fuelLiters is number && request.resource.data.fuelLiters >= 0)) &&
+        (!('fuelConsumption' in request.resource.data) || 
+         (request.resource.data.fuelConsumption is number && request.resource.data.fuelConsumption >= 0));
       
       // Permitir exclusão para o proprietário
       allow delete: if request.auth != null && 

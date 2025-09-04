@@ -79,6 +79,18 @@ export function TripDetails({ trip }: TripDetailsProps) {
                 </div>
                 <div className="text-lg font-semibold text-purple-900">{duration.days}d</div>
               </div>
+              {trip.fuelLiters && (
+                <div className="p-3 bg-orange-50 rounded-md">
+                  <div className="text-sm font-medium text-orange-800">Combustível gasto</div>
+                  <div className="text-lg font-semibold text-orange-900">{trip.fuelLiters.toLocaleString()} L</div>
+                </div>
+              )}
+              {trip.fuelConsumption && (
+                <div className="p-3 bg-red-50 rounded-md">
+                  <div className="text-sm font-medium text-red-800">Consumo médio</div>
+                  <div className="text-lg font-semibold text-red-900">{trip.fuelConsumption.toFixed(3)} L/km</div>
+                </div>
+              )}
             </div>
           )}
         </CardContent>

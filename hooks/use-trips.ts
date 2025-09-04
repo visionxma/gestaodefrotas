@@ -20,6 +20,8 @@ export interface Trip {
   startTime: string
   endDate?: string
   endTime?: string
+  fuelLiters?: number
+  fuelConsumption?: number // Litros por KM
   status: "in_progress" | "completed"
   userId: string
 }
@@ -129,6 +131,7 @@ export function useTrips() {
       endKm: number
       endDate: string
       endTime: string
+      fuelLiters: number
     },
   ) => {
     try {
@@ -138,17 +141,20 @@ export function useTrips() {
         return false
       }
 
+      const kmTraveled = endData.endKm - currentTrip.startKm
+      const fuelConsumption = kmTraveled > 0 ? endData.fuelLiters / kmTraveled : 0
       const tripRef = doc(db, "trips", id)
       await updateDoc(tripRef, {
         endLocation: endData.endLocation,
         endKm: endData.endKm,
         endDate: endData.endDate,
         endTime: endData.endTime,
+        fuelLiters: endData.fuelLiters,
+        fuelConsumption: Math.round(fuelConsumption * 1000) / 1000, // 3 casas decimais
         status: "completed",
         updatedAt: new Date(),
       })
 
-      const kmTraveled = endData.endKm - currentTrip.startKm
       if (kmTraveled > 0) {
         console.log(`[v0] Atualizando quilometragem do caminhão ${currentTrip.truckId} com +${kmTraveled} km`)
 
